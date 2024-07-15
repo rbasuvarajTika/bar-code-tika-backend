@@ -55,13 +55,13 @@ public class User implements UserDetails {
 	@Column(name = "LAST_NAME")
 	private String lastName;
 
-	@Column(name = "FULL_NAME")
-	private String fullName;
+	//@Column(name = "FULL_NAME")
+    //private String fullName;
 
 	@Column(name = "TITLE")
 	private String title;
 
-	@Column(name = "Role")
+	@Column(name = "USER_ROLE")
 	private String role;
 
 	@Column(name = "USER_EMAIL")
@@ -100,8 +100,8 @@ public class User implements UserDetails {
 	@Column(name = "USER_TERR")
 	private String userTerr;
 
-	@Column(name = "EMP_ID")
-	private String empId;
+   // @Column(name = "EMP_ID")
+    //private String empId;
 
 	@Column(name = "HIRE_DATE")
 	private Date hireDate;
