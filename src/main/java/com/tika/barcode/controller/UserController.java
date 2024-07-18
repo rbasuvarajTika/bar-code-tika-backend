@@ -38,11 +38,19 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+//	/** Create a User in userList */
+//	@PostMapping(UsersConstant.CREATEUSER)
+//	@CrossOrigin(origins = "*")
+//	public ResponseEntity<String> createUser(@Valid @RequestBody SignUpRequest request) {
+//		return ResponseEntity.ok(userService.createUser(request));
+//	}
+	
 	/** Create a User in userList */
 	@PostMapping(UsersConstant.CREATEUSER)
 	@CrossOrigin(origins = "*")
-	public ResponseEntity<String> createUser(@Valid @RequestBody SignUpRequest request) {
-		return ResponseEntity.ok(userService.createUser(request));
+	public NSServiceResponse<String> createUser(@Valid @RequestBody SignUpRequest request) {
+		return ResponseHelper.createResponse(new NSServiceResponse<String>(), userService.createUser(request), CommonConstants.SUCCESSFULLY,
+				CommonConstants.ERRROR);
 	}
 	
 	/** Retrieves A list Of ActiveUsers In UserDetails List */

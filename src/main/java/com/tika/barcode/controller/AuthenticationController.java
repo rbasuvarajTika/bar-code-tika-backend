@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tika.barcode.constants.CommonConstants;
 import com.tika.barcode.dto.request.SigninRequest;
 import com.tika.barcode.dto.response.JwtAuthenticationResponse;
+import com.tika.barcode.dto.response.NSServiceResponse;
+import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.AuthenticationService;
+import com.tika.barcode.utility.ResponseHelper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,9 +33,18 @@ public class AuthenticationController {
     
     
     /** Login a User.*/
+//    @PostMapping("/signin")
+//    @CrossOrigin(origins = "*", allowedHeaders = "*")
+//    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
+//        return ResponseEntity.ok(authenticationService.adminSignin(request));
+//    }
+    
+    /** Login a User.*/
     @PostMapping("/signin")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
-        return ResponseEntity.ok(authenticationService.adminSignin(request));
+    public NSServiceResponse<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
+    	return ResponseHelper.createResponse(new NSServiceResponse<JwtAuthenticationResponse>(), 
+    			authenticationService.adminSignin(request),
+				CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
     }
 }
