@@ -1,7 +1,5 @@
 package com.tika.barcode.controller;
 
-import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +10,6 @@ import com.tika.barcode.constants.CommonConstants;
 import com.tika.barcode.dto.request.SigninRequest;
 import com.tika.barcode.dto.response.JwtAuthenticationResponse;
 import com.tika.barcode.dto.response.NSServiceResponse;
-import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.AuthenticationService;
 import com.tika.barcode.utility.ResponseHelper;
 
@@ -31,16 +28,9 @@ public class AuthenticationController {
 	
     private final AuthenticationService authenticationService;
     
-    
     /** Login a User.*/
-//    @PostMapping("/signin")
-//    @CrossOrigin(origins = "*", allowedHeaders = "*")
-//    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
-//        return ResponseEntity.ok(authenticationService.adminSignin(request));
-//    }
-    
-    /** Login a User.*/
-    @PostMapping("/signin")
+    @SuppressWarnings("unchecked")
+	@PostMapping("/signin")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public NSServiceResponse<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
     	return ResponseHelper.createResponse(new NSServiceResponse<JwtAuthenticationResponse>(), 

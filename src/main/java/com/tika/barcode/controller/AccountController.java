@@ -4,14 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import com.tika.barcode.constants.AccountConstant;
 import com.tika.barcode.constants.CommonConstants;
@@ -30,6 +28,7 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping(AccountConstant.ACC_LIST)
 	@CrossOrigin(origins = "*")
 	public NSServiceResponse<List<AccountResponse>> getAccountList() {
@@ -37,6 +36,7 @@ public class AccountController {
 				CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping(AccountConstant.ACC_DETAILS_BY_ACCID)
 	@CrossOrigin(origins = "*")
 	public NSServiceResponse<List<AcoountDetailsResponse>> getAccountDetailsByAccId(@PathVariable Integer accountId) {
@@ -44,6 +44,7 @@ public class AccountController {
 				CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping(AccountConstant.ACC_LIST_PAGE)
 	@CrossOrigin(origins = "*")
 	public NSServiceResponse<PageResponseDTO> getAccountList(
@@ -54,12 +55,13 @@ public class AccountController {
 				CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping(AccountConstant.ACC_DETAILS_BY_ACCID_PAGE)
 	@CrossOrigin(origins = "*")
 	public NSServiceResponse<PageResponseDTO> getAccountDetailsByAccId(
 			@PathVariable Integer accountId,
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+			@RequestParam(defaultValue = "0",required = false) int page,
+			@RequestParam(defaultValue = "10",required = false) int size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
 		return ResponseHelper.createResponse(new NSServiceResponse<PageResponseDTO>(), 
 				accountService.getAccountDetailsByAccIdPagination(accountId,pageRequest),

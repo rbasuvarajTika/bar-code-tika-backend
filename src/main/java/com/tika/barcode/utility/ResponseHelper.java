@@ -23,6 +23,7 @@ public class ResponseHelper {
 	 * @param errorMessage
 	 * @return
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static NSServiceResponse createResponse(NSServiceResponse response, Object data, String successMessage,
 			String errorMessage) {
 
@@ -45,6 +46,7 @@ public class ResponseHelper {
 	 * @param errorMessage
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public static NSServiceResponse createResponseForFlags(NSServiceResponse response, boolean flag, String successMessage,
 			String errorMessage) {
 		if (flag) {
