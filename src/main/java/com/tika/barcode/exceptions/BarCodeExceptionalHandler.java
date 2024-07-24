@@ -1,9 +1,11 @@
 package com.tika.barcode.exceptions;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import jakarta.servlet.http.HttpServletResponse;
+
 
 /**
  * Processes an {@link NextScienceServiceExceptionalHandler } request.

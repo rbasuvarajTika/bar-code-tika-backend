@@ -2,7 +2,13 @@ package com.tika.barcode.config;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.codec.binary.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,22 +22,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.tika.barcode.service.JwtService;
 import com.tika.barcode.service.UserService;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Processes an {@link JwtAuthenticationFilter} request.
  * @author Raghu
  *
  */
 @Component
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	private final JwtService jwtService;
-	private final UserService userService;
+	@Autowired
+	private JwtService jwtService;
+	
+	@Autowired
+	private UserService userService;
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -39,13 +41,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		final String authHeader = request.getHeader("Authorization");
 		final String jwt;
 		final String userEmail;
-		if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
+		if(authHeader==null) {
 			filterChain.doFilter(request, response);
 			return;
+		}else {
+			if (!authHeader.startsWith("Bearer ")) {
+				filterChain.doFilter(request, response);
+				return;
+			}
 		}
+		
 		jwt = authHeader.substring(7);
 		userEmail = jwtService.extractUserName(jwt);
-		if (StringUtils.isNotEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
+		if (!userEmail.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
 			if (jwtService.isTokenValid(jwt, userDetails)) {
 				SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -65,4 +73,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 		return null;
 	}
+
 }

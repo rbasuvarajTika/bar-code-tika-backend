@@ -48,10 +48,11 @@ public class AccountController {
 	@GetMapping(AccountConstant.ACC_LIST_PAGE)
 	@CrossOrigin(origins = "*")
 	public NSServiceResponse<PageResponseDTO> getAccountList(
+			@RequestParam(required = false) String accountName,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
-		return ResponseHelper.createResponse(new NSServiceResponse<PageResponseDTO>(), accountService.getAccountListPagination(pageRequest),
+		return ResponseHelper.createResponse(new NSServiceResponse<PageResponseDTO>(), accountService.getAccountListPagination(accountName,pageRequest),
 				CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	}
 	
@@ -67,6 +68,8 @@ public class AccountController {
 				accountService.getAccountDetailsByAccIdPagination(accountId,pageRequest),
 				CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	}
+	
+	
 
 }
 

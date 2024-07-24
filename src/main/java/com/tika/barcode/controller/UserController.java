@@ -2,6 +2,7 @@ package com.tika.barcode.controller;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import com.tika.barcode.dto.response.UserDetailsResponse;
 import com.tika.barcode.service.UserService;
 import com.tika.barcode.utility.ResponseHelper;
 
-import jakarta.validation.Valid;
+
 
 /**
  * Processes an {@link UserController } controller.
@@ -40,7 +41,7 @@ public class UserController {
 	@SuppressWarnings("unchecked")
 	@PostMapping(UsersConstant.CREATEUSER)
 	@CrossOrigin(origins = "*")
-	public NSServiceResponse<String> createUser(@Valid @RequestBody SignUpRequest request) {
+	public NSServiceResponse<String> createUser(@RequestBody SignUpRequest request) {
 		return ResponseHelper.createResponse(new NSServiceResponse<String>(), userService.createUser(request), CommonConstants.SUCCESSFULLY,
 				CommonConstants.ERRROR);
 	}

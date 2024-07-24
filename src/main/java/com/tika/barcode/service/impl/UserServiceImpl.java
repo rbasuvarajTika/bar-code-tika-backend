@@ -4,25 +4,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.tika.barcode.config.CustomPasswordEncoder;
+import com.tika.barcode.dto.request.SignUpRequest;
 import com.tika.barcode.dto.response.UserDetailsResponse;
 import com.tika.barcode.entity.User;
 import com.tika.barcode.enums.ErrorCodes;
 import com.tika.barcode.exceptions.NSException;
-import com.tika.barcode.config.CustomPasswordEncoder;
-import com.tika.barcode.dto.request.SignUpRequest;
 import com.tika.barcode.repo.UserRepository;
 import com.tika.barcode.service.UserService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.ParameterMode;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.StoredProcedureQuery;
+
+
 
 /**
  * Service Class for managing {@link UserServiceImpl}.request

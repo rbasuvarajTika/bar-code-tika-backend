@@ -2,9 +2,12 @@ package com.tika.barcode.service.impl;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,9 +19,6 @@ import com.tika.barcode.dto.response.AcoountDetailsResponse;
 import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.AccountService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -59,19 +59,44 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public PageResponseDTO getAccountListPagination(PageRequest pageRequest) {
-
-		Query query = (Query) entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+	public PageResponseDTO getAccountListPagination(String accountName,PageRequest pageRequest) {
+		
+		String selectQuery = new StringBuilder().append("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
 				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
 				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)");
-		Query queryCount = (Query) entityManager.createNativeQuery("select COUNT(*) "
+				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
+		
+		String countQuery = new StringBuilder().append("select COUNT(*) "
 				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)");
+				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
+		
+		
+		if(accountName!=null) {
+			if(!accountName.isEmpty()) {
+			selectQuery = new StringBuilder().append(selectQuery).append(" WHERE b.ACCOUNT_NAME LIKE  ").append("'%")
+					.append(accountName).append("%'").toString();
+			countQuery = new StringBuilder().append(countQuery).append(" WHERE b.ACCOUNT_NAME LIKE  ").append("'%")
+					.append(accountName).append("%'").toString();
+			}
+		}
+
+//		Query query = (Query) entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+//				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
+//				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)");
+//		
+//		Query queryCount = (Query) entityManager.createNativeQuery("select COUNT(*) "
+//				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)");
+		
+		Query query = (Query) entityManager.createNativeQuery(selectQuery);
+		Query queryCount = (Query) entityManager.createNativeQuery(countQuery);
 		int pageNumber = pageRequest.getPageNumber();
 		int pageSize = pageRequest.getPageSize();
 		query.setFirstResult((pageNumber) * pageSize);
 		query.setMaxResults(pageSize);
+		
+		
 
 		List<Object[]> queryResult = query.getResultList();
 		List<Object> countResult = queryCount.getResultList();

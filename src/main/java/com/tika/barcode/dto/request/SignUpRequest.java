@@ -1,7 +1,8 @@
 package com.tika.barcode.dto.request;
 
 import java.util.Date;
-import jakarta.validation.constraints.NotBlank;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,15 +20,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SignUpRequest {
 
-	@NotBlank
+
 	private String userName;
-	@NotBlank
 	private String firstName;
 	private String middleName;
-	@NotBlank
 	private String lastName;
 	private String email;
-	@NotBlank
 	private String password;
 	private String confirmPassword;
 	private String otherPassword;

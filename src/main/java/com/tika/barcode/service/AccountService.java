@@ -13,8 +13,10 @@ public interface AccountService {
 	public List<AccountResponse> getAccountList();
 	public List<AcoountDetailsResponse> getAccountDetailsByAccId(Integer accountId);
 	
-	public PageResponseDTO getAccountListPagination(PageRequest pageRequest);
+	public PageResponseDTO getAccountListPagination(String accountName,PageRequest pageRequest);
 	public PageResponseDTO getAccountDetailsByAccIdPagination(Integer accountId,PageRequest pageRequest);
+	
+	
 	
 
 }
