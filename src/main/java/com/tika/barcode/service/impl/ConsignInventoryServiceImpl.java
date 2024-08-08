@@ -135,12 +135,16 @@ public class ConsignInventoryServiceImpl implements ConsignInventoryService {
 		response.setTerritoryId((Integer) record[1]);
 		response.setItemId((Integer) record[2]);
 		response.setBatchNo((String) record[3]);
-		response.setExpiryDate((Date) record[4]);
+		Date expirydate = (Date) record[4];
+		if(expirydate!=null)
+		  response.setExpiryDate(expirydate.toLocalDate());
 		response.setTotalStock((BigDecimal) record[5]);
 		response.setMaterialKey((String) record[6]);
 		response.setCustomerId((String) record[7]);
 		response.setCustomerName((String) record[8]);
-		response.setRfrshDate((Timestamp) record[9]);
+		Timestamp rfrshDate = (Timestamp) record[9];
+		if(rfrshDate!=null)
+		  response.setRfrshDate(rfrshDate.toLocalDateTime());
 		return response;
 	}
 

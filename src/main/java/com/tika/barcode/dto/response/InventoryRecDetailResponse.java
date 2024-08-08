@@ -2,6 +2,7 @@ package com.tika.barcode.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -12,30 +13,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AcoountDetailsResponse {
+public class InventoryRecDetailResponse {
 	
 	private Integer accountId;
-
     private String accountName;
-
-    private String address1;
-
-    private String address2;
-
-    private String city;
-
-    private String state;
-
-    private String zip;
-
-
-    private Integer itemId;
-    private String materialKey;
-    private String itemDesc1;
-    private String batch;
-    private String lotNo;
+    private Integer trnInvRecId;
+    private Integer reconCycleId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate expiryDate;
-    private BigDecimal qtyInHand;
-
+    private LocalDateTime reconStartDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate reconClosedDate;
+    private String reconStatus;
+    
 }

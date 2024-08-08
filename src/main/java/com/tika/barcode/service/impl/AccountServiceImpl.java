@@ -29,15 +29,39 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public List<AccountResponse> getAccountList() {
 
-		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
-				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
-				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").getResultList();
+//		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+//				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
+//				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").getResultList();
+		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
+				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
+				+ "from DIM_ACCOUNT b \r\n"
+				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+				+ "where c.TERRITORY_ID=943").getResultList();
 
 		List<AccountResponse> accountResponses = queryResult.stream().map(this::mapToObjectArrayAccResponse)
 				.collect(Collectors.toList());
 
 		return accountResponses;
+	}
+
+	@Override
+	public List<AcoountDetailsResponse> getAllAccountDetails() {
+		List<Object[]> queryResult = entityManager
+				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
+						+ "b.CITY,b.STATE,b.ZIP,\r\n"
+						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,a.LOT_NO,a.Expiry_Date,"
+						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
+						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
+						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" )
+				.getResultList();
+
+		List<AcoountDetailsResponse> acoountDetailsResponses = queryResult.stream()
+				.map(this::mapToObjectArrayAccDetResponse).collect(Collectors.toList());
+		
+		return acoountDetailsResponses;
 	}
 
 	@Override
@@ -61,15 +85,27 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public PageResponseDTO getAccountListPagination(String accountName,PageRequest pageRequest) {
 		
-		String selectQuery = new StringBuilder().append("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
-				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
-				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
+//		String selectQuery = new StringBuilder().append("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+//				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
+//				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
+//		
+//		String countQuery = new StringBuilder().append("select COUNT(*) "
+//				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
+		
+		String selectQuery = new StringBuilder().append("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,"
+				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME"
+				+ "from DIM_ACCOUNT b "
+				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID) "
+				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID) "
+				+ "where c.TERRITORY_ID=943").toString();
 		
 		String countQuery = new StringBuilder().append("select COUNT(*) "
-				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
-		
+				+ "from DIM_ACCOUNT b "
+				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID) "
+				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID) "
+				+ "where c.TERRITORY_ID=943").toString();
 		
 		if(accountName!=null) {
 			if(!accountName.isEmpty()) {
@@ -180,9 +216,9 @@ public class AccountServiceImpl implements AccountService {
 		response.setCity((String) record[4]);
 		response.setState((String) record[5]);
 		response.setZip((String) record[6]);
-		response.setTerritoryId((Integer) record[7]);
-		response.setTerritoryCd((String) record[8]);
-		response.setTerritoryName((String) record[9]);
+//		response.setTerritoryId((Integer) record[7]);
+//		response.setTerritoryCd((String) record[8]);
+//		response.setTerritoryName((String) record[9]);
 		return response;
 	}
 
@@ -200,10 +236,13 @@ public class AccountServiceImpl implements AccountService {
 		response.setItemDesc1((String) record[9]);
 		response.setBatch((String) record[10]);
 		response.setLotNo((String) record[11]);
-		response.setExpiryDate((Date) record[12]);
+		Date expirydate = (Date) record[12];
+		if(expirydate!=null)
+		  response.setExpiryDate(expirydate.toLocalDate());
 		response.setQtyInHand((BigDecimal) record[13]);
 
 		return response;
 	}
 
+	
 }

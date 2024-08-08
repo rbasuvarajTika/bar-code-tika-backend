@@ -1,8 +1,10 @@
 package com.tika.barcode.dto.response;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,11 +18,12 @@ public class ConsignInventoryResponse {
 	private Integer territoryId;
 	private Integer itemId;
 	private String batchNo;
-	private Date expiryDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate expiryDate;
 	private BigDecimal totalStock;
 	private String materialKey;
 	private String customerId;
 	private String customerName;
-	private Timestamp rfrshDate;
+	private LocalDateTime rfrshDate;
 
 }
