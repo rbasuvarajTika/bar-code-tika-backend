@@ -1,8 +1,19 @@
 package com.tika.barcode.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,5 +87,35 @@ public class InventoryController {
 				inventoryService.closeInventoryRecon(closeInventoryRequest),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 		
 	}
+	
+	 @GetMapping("/download")
+	    public ResponseEntity<byte[]> downloadPdf(@RequestParam Integer trnInvRecId) {
+	        try {
+	            // Example list; replace with actual data fetching logic
+	           // List<InventoryRecCloseDetailResponse> details = fetchInventoryData();
+
+	            // Generate PDF as a byte array
+	            byte[] pdfContent = inventoryService.createInventoryPdf(trnInvRecId);
+
+	            // Generate file name
+	            String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+
+	            // Set headers for download
+	            HttpHeaders headers = new HttpHeaders();
+	            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+	            headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+
+	            return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+
+//	    private List<InventoryRecCloseDetailResponse> fetchInventoryData() {
+//	        // Replace with actual data retrieval logic
+//	        return List.of(
+//	                new InventoryRecCloseDetailResponse(1, "Account 1", 1, 1, "Item123", 1, "Lot123", LocalDateTime.now(), new BigDecimal("100"), LocalDate.now(), "Closed")
+//	        );
+//	    }
 	
 }

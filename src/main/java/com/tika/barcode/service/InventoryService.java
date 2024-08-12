@@ -1,5 +1,6 @@
 package com.tika.barcode.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.tika.barcode.dto.request.AddInventoryRequest;
@@ -28,5 +29,10 @@ public interface InventoryService {
 	public List<InventoryRecCloseDetailResponse> getInvRecCloseDetails();
 	
 	public String closeInventoryRecon(CloseInventoryRequest closeInventoryRequest);
+	
+	public List<InventoryRecCloseDetailResponse> getInvRecCloseDetByTrnInvRecId(Integer trnInvRecId);
+	
+	//public byte[] generatePdf(Integer trnInvRecId) throws IOException;
+	public byte[] createInventoryPdf(Integer trnInvRecId) throws Exception;
 
 }

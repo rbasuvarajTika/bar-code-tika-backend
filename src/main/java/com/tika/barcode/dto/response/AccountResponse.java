@@ -27,8 +27,9 @@ public class AccountResponse {
     private Integer territoryId;
     private String territoryCd ;
     private String territoryName;
-
-
+    private String repName;
+    private String userName;
+    //private String userLogin;
 
 
 

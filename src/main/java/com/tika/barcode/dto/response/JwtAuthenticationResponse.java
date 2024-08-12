@@ -20,4 +20,8 @@ public class JwtAuthenticationResponse {
     private String role;
     private Integer userId;
     private String userName;
+    private String firstName;
+    private String lastName;
+    private String fullName;
+    
 }

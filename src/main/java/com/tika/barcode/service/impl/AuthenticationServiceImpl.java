@@ -41,7 +41,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user= userRepository.findByUserName(request.getUserName())
                 .orElseThrow(() -> new IllegalArgumentException(CommonConstants.INVALIDEMAILORPASSWORD));
         String jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse.builder().token(jwt).role(user.getRole()).userId(user.getUserId()).userName(user.getUsername()).build();
+        String fullName = user.getFirstName()+" "+user.getLastName();
+        return JwtAuthenticationResponse.builder().token(jwt).role(user.getRole()).userId(user.getUserId())
+        		.userName(user.getUsername()).firstName(user.getFirstName()).lastName(user.getLastName()).fullName(fullName).build();
     }
 
 }

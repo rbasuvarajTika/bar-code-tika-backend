@@ -1,8 +1,12 @@
 package com.tika.barcode.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tika.barcode.dto.request.AddInventoryRequest;
@@ -25,12 +30,15 @@ import com.tika.barcode.dto.response.InventoryRecCloseDetailResponse;
 import com.tika.barcode.dto.response.InventoryRecDetailResponse;
 import com.tika.barcode.dto.response.InventoryReconResonse;
 import com.tika.barcode.service.InventoryService;
+import com.tika.barcode.utility.PdfGenerator;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	@Autowired
+	private PdfGenerator pdfGenerator;
 
 	@Override
 	public Integer initiateInventoryProc(InitiateInventoryRequest initiateInventoryRequest) {
@@ -55,16 +63,20 @@ public class InventoryServiceImpl implements InventoryService {
 		query.registerStoredProcedureParameter("USER", String.class, ParameterMode.IN);
 		query.registerStoredProcedureParameter("TRN_INV_REC_ID", Integer.class, ParameterMode.IN);
 		query.registerStoredProcedureParameter("ITEM_CODE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("BATCH_NO", String.class, ParameterMode.IN);
+		//query.registerStoredProcedureParameter("ITEM_NAME", String.class, ParameterMode.IN);
+		//query.registerStoredProcedureParameter("BATCH_NO", String.class, ParameterMode.IN);
 		query.registerStoredProcedureParameter("LOT_NO", String.class, ParameterMode.IN);
 		query.registerStoredProcedureParameter("QTY_IN_HAND", Integer.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter("EXPIRY_DATE", String.class, ParameterMode.IN);
 
 		query.setParameter("USER", addInventoryRequest.getUser());
 		query.setParameter("TRN_INV_REC_ID", addInventoryRequest.getTrnInvRecId());
 		query.setParameter("ITEM_CODE", addInventoryRequest.getItemCode());
-		query.setParameter("BATCH_NO", addInventoryRequest.getBatchNo());
+		//query.setParameter("ITEM_NAME", addInventoryRequest.getItemName());
+		//query.setParameter("BATCH_NO", addInventoryRequest.getBatchNo());
 		query.setParameter("LOT_NO", addInventoryRequest.getLotNo());
 		query.setParameter("QTY_IN_HAND", addInventoryRequest.getQtyInHand());
+		query.setParameter("EXPIRY_DATE", addInventoryRequest.getExpiryDate());
 
 		query.execute();
 		// Retrieve the output parameter
@@ -146,9 +158,9 @@ public class InventoryServiceImpl implements InventoryService {
 			@SuppressWarnings("unlikely-arg-type")
 			List<AcoountDetailsResponse> acoountDetailsResponsesNew = 
 			acoountDetailsResponses.stream().filter(e->e.getAccountId().equals(request.getAccountId()) 
-					  && e.getBatch().equalsIgnoreCase(request.getBatchNo())
+					 // && e.getBatch().equalsIgnoreCase(request.getBatchNo())
 					  && e.getLotNo().equalsIgnoreCase(request.getLotNo())
-					  && (e.getMaterialKey().equalsIgnoreCase(request.getItemCode()) || e.getItemId().equals(request.getItemCode()))
+					  && (e.getItemNumber().equalsIgnoreCase(request.getItemNumber()) || e.getItemId().equals(request.getItemNumber()))
 					  && e.getQtyInHand().intValue()==request.getQtyInHand()).collect(Collectors.toList());
 			if(acoountDetailsResponsesNew.size() == 0) {
 				response = insertInventoryRecon(request,trnInvRecId);
@@ -166,22 +178,27 @@ public class InventoryServiceImpl implements InventoryService {
 		List<Object> queryResult = entityManager
 				.createNativeQuery("select a.TRN_INV_REC_DETAIL_ID "
 						+ "from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"
-				+ "where a.BATCH_NO=?1 AND a.LOT_NO=?2")
-				.setParameter(1, inventoryReconRequest.getBatchNo())
+				+ "where a.ITEM_CODE=?1 AND a.LOT_NO=?2")
+				.setParameter(1, inventoryReconRequest.getItemNumber())
 				.setParameter(2, inventoryReconRequest.getLotNo())
 				.getResultList();
 
 		if (queryResult.isEmpty()) {
-			AddInventoryRequest addInventoryRequest = new AddInventoryRequest(inventoryReconRequest.getUser(), invRecId,
-					inventoryReconRequest.getItemCode(), inventoryReconRequest.getBatchNo(),
-					inventoryReconRequest.getLotNo(), inventoryReconRequest.getQtyInHand());
+			AddInventoryRequest addInventoryRequest = new AddInventoryRequest(inventoryReconRequest.getUser(), 
+					invRecId,
+					inventoryReconRequest.getItemNumber(),
+					inventoryReconRequest.getItemName(),
+					//inventoryReconRequest.getBatchNo(),
+					inventoryReconRequest.getLotNo(), 
+					inventoryReconRequest.getQtyInHand(),
+					inventoryReconRequest.getExpiryDate());
 			Integer invRecDetailId = addInventoryProc(addInventoryRequest);
 		}else {
 			Integer trnInvRecDetId = (Integer) queryResult.get(0);
 			ModifyInventoryRequest mapMod = new ModifyInventoryRequest();
 			mapMod.setTrnInvRecDetailId(trnInvRecDetId);
 			mapMod.setUser(inventoryReconRequest.getUser());
-			mapMod.setItemCode(inventoryReconRequest.getItemCode());
+			mapMod.setItemCode(inventoryReconRequest.getItemNumber());
 			mapMod.setQtyInHand(inventoryReconRequest.getQtyInHand());
 			String modifyResponse = modifyInventoryProc(mapMod);
 		}
@@ -311,9 +328,9 @@ public class InventoryServiceImpl implements InventoryService {
 		response.setAccountName((String) record[1]);
 		response.setTrnInvRecId((Integer) record[2]);
 		response.setTrnInvRecDetailsId((Integer) record[3]);
-		response.setBatchNo((String) record[4]);
+		//response.setBatchNo((String) record[4]);
 		response.setItemId((Integer) record[5]);
-		response.setMaterialKey((String) record[6]);
+		response.setItemNumber((String) record[6]);
 		response.setLotNo((String) record[7]);
 		response.setReconCycleId((Integer) record[8]);
 		Timestamp startDate = (Timestamp) record[9];
@@ -353,9 +370,9 @@ public class InventoryServiceImpl implements InventoryService {
 		response.setState((String) record[5]);
 		response.setZip((String) record[6]);
 		response.setItemId((Integer) record[7]);
-		response.setMaterialKey((String) record[8]);
-		response.setItemDesc1((String) record[9]);
-		response.setBatch((String) record[10]);
+		response.setItemNumber((String) record[8]);
+		response.setItemName((String) record[9]);
+		//response.setBatch((String) record[10]);
 		response.setLotNo((String) record[11]);
 		Date expirydate = (Date) record[12];
 		if(expirydate!=null)
@@ -364,6 +381,102 @@ public class InventoryServiceImpl implements InventoryService {
 
 		return response;
 	}
+
+	@Override	
+	public List<InventoryRecCloseDetailResponse> getInvRecCloseDetByTrnInvRecId(Integer trnInvRecId) {
+		String sql = " select  b.ACCOUNT_ID,c.ACCOUNT_NAME,a.TRN_INV_REC_ID,a.TRN_INV_REC_DETAIL_ID,a.BATCH_NO,"
+				+ "a.ITEM_ID,a.ITEM_CODE,a.LOT_NO,b.REC_CYCLE_ID,b.CREATED_DATE,A.QTY_IN_HAND,B.RECON_CLOSED_DATE,b.RECON_STATUS\r\n"
+				+ "from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"
+				+ "join TRN_INVENTORY_RECONCILE b on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
+				+ "join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
+				+ "where b.RECON_STATUS IN ('Closed') AND a.TRN_INV_REC_ID =?1";
+		Query nativeQuery = entityManager.createNativeQuery(sql).setParameter(1, trnInvRecId);
+        List<Object[]> queryResult = nativeQuery.getResultList();
+        List<InventoryRecCloseDetailResponse> inventoryReconDetailResonses = queryResult.stream()
+				.map(this::mapToObjectArrayInvRecDetCloseResponse).collect(Collectors.toList());
+		return inventoryReconDetailResonses;
+	}
+	
+	
+
+
+//    public void createInventoryPdf(Integer trnInvRecId) throws Exception {
+//    	List<InventoryRecCloseDetailResponse> details = getInvRecCloseDetByTrnInvRecId(trnInvRecId);
+//        HashMap<String, Object> data = new HashMap<>();
+//        data.put("details", details);
+//
+//        String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+//        pdfGenerator.generatePdf("inventory-report", data, fileName);
+//    }
+    public byte[] createInventoryPdf(Integer trnInvRecId) throws Exception {
+    	List<InventoryRecCloseDetailResponse> details = getInvRecCloseDetByTrnInvRecId(trnInvRecId);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("details", details);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        pdfGenerator.generatePdf("inventory-report", data, os);
+        return os.toByteArray();
+    }
+	
+//	@Override
+//	public byte[] generatePdf(Integer trnInvRecId) throws IOException {
+//		List<InventoryRecCloseDetailResponse> details = getInvRecCloseDetByTrnInvRecId(trnInvRecId);
+//        try (PDDocument document = new PDDocument()) {
+//            PDPage page = new PDPage();
+//            document.addPage(page);
+//
+//            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+//                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+//                
+//                // Title
+//                contentStream.beginText();
+//                contentStream.newLineAtOffset(50, 750);
+//                contentStream.showText("Inventory Reconciliation Close Details");
+//                contentStream.endText();
+//
+//                // Draw vertical headers
+//                float startX = 50;
+//                float startY = 700;
+//                float headerHeight = 500;  // Adjust based on your need
+//                String[] headers = {
+//                    "Account ID", "Account Name", "Trn Inv Rec ID", "Trn Inv Rec Details ID", 
+//                    "Batch No", "Item ID", "Material Key", "Recon Cycle ID", 
+//                    "Lot No", "Recon Start Date", "Qty In Hand", "Recon Closed Date", "Recon Status"
+//                };
+//
+//                for (int i = 0; i < headers.length; i++) {
+//                    float x = startX + (i * 60);  // Adjust spacing based on header width
+//                    drawVerticalText(contentStream, headers[i], x, startY, headerHeight);
+//                }
+//
+//                // Draw data rows
+//                contentStream.beginText();
+//                contentStream.newLineAtOffset(50, 200);
+//                for (InventoryRecCloseDetailResponse detail : details) {
+//                    contentStream.showText(String.format("%d | %s | %d | %d | %s | %d | %s | %d | %s | %s | %s | %s",
+//                            detail.getAccountId(), detail.getAccountName(), detail.getTrnInvRecId(), detail.getTrnInvRecDetailsId(),
+//                            detail.getBatchNo(), detail.getItemId(), detail.getMaterialKey(), detail.getReconCycleId(),
+//                            detail.getLotNo(), detail.getReconStartDate(), detail.getQtyInHand(), detail.getReconClosedDate(),
+//                            detail.getReconStatus()));
+//                    contentStream.newLine();
+//                }
+//                contentStream.endText();
+//            }
+//
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            document.save(baos);
+//            return baos.toByteArray();
+//        }
+//    }
+//
+//    private void drawVerticalText(PDPageContentStream contentStream, String text, float x, float y, float height) throws IOException {
+//        // Set up text rotation
+//        contentStream.setTextMatrix(AffineTransform.getRotateInstance(-Math.PI / 2, x, y));
+//        contentStream.beginText();
+//        contentStream.newLineAtOffset(x, y);
+//        contentStream.showText(text);
+//        contentStream.endText();
+//    }
 
 
 }

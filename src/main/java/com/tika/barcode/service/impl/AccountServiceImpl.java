@@ -27,18 +27,27 @@ public class AccountServiceImpl implements AccountService {
 	private EntityManager entityManager;
 
 	@Override
-	public List<AccountResponse> getAccountList() {
+	public List<AccountResponse> getAccountList(String user) {
 
 //		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
 //				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n" + "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
 //				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
 //				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").getResultList();
-		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
-				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
+//		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
+//				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME\r\n"
+//				+ "from DIM_ACCOUNT b \r\n"
+//				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+//				+ "where c.TERRITORY_ID=943").getResultList();
+		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
+				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME,\r\n"
+				+ "concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN \r\n"
 				+ "from DIM_ACCOUNT b \r\n"
 				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
 				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-				+ "where c.TERRITORY_ID=943").getResultList();
+				+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
+				+ "where u.USER_NAME=?1").setParameter(1, user).getResultList();
 
 		List<AccountResponse> accountResponses = queryResult.stream().map(this::mapToObjectArrayAccResponse)
 				.collect(Collectors.toList());
@@ -47,16 +56,30 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public List<AcoountDetailsResponse> getAllAccountDetails() {
+	public List<AcoountDetailsResponse> getAllAccountDetails(String user) {
+//		List<Object[]> queryResult = entityManager
+//				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
+//						+ "b.CITY,b.STATE,b.ZIP,\r\n"
+//						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,a.LOT_NO,a.Expiry_Date,"
+//						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
+//						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
+//						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+//						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" )
+//				.getResultList();
+		
 		List<Object[]> queryResult = entityManager
-				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
-						+ "b.CITY,b.STATE,b.ZIP,\r\n"
-						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,a.LOT_NO,a.Expiry_Date,"
-						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
+				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],"
+						+ "b.ZIP,d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,a.LOT_NO,"
+						+ "a.[Expiry_Date],a.Total_Stock QTY_IN_HAND\r\n"
+						+ ",concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN\r\n"
+						+ "from FCT_CONSIGNMENT_INVENTORY a\r\n"
 						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
 						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" )
-				.getResultList();
+						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n"
+						+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
+						+ "where u.USER_NAME=?1")
+						//+ "where b.ACCOUNT_ID=883" )
+				.setParameter(1, user).getResultList();
 
 		List<AcoountDetailsResponse> acoountDetailsResponses = queryResult.stream()
 				.map(this::mapToObjectArrayAccDetResponse).collect(Collectors.toList());
@@ -216,9 +239,11 @@ public class AccountServiceImpl implements AccountService {
 		response.setCity((String) record[4]);
 		response.setState((String) record[5]);
 		response.setZip((String) record[6]);
-//		response.setTerritoryId((Integer) record[7]);
-//		response.setTerritoryCd((String) record[8]);
-//		response.setTerritoryName((String) record[9]);
+		response.setTerritoryId((Integer) record[7]);
+		response.setTerritoryCd((String) record[8]);
+		response.setTerritoryName((String) record[9]);
+		response.setRepName((String) record[10]);
+		response.setUserName((String) record[11]);
 		return response;
 	}
 
@@ -232,14 +257,16 @@ public class AccountServiceImpl implements AccountService {
 		response.setState((String) record[5]);
 		response.setZip((String) record[6]);
 		response.setItemId((Integer) record[7]);
-		response.setMaterialKey((String) record[8]);
-		response.setItemDesc1((String) record[9]);
-		response.setBatch((String) record[10]);
+		response.setItemNumber((String) record[8]);
+		response.setItemName((String) record[9]);
+		//response.setBatch((String) record[10]);
 		response.setLotNo((String) record[11]);
 		Date expirydate = (Date) record[12];
 		if(expirydate!=null)
 		  response.setExpiryDate(expirydate.toLocalDate());
 		response.setQtyInHand((BigDecimal) record[13]);
+		response.setRepName((String) record[14]);
+		response.setUserName((String) record[15]);
 
 		return response;
 	}

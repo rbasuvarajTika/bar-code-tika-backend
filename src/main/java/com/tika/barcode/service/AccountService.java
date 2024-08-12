@@ -10,8 +10,10 @@ import com.tika.barcode.dto.response.PageResponseDTO;
 
 public interface AccountService {
 	
-	public List<AccountResponse> getAccountList();
-	public List<AcoountDetailsResponse> getAllAccountDetails();
+	public List<AccountResponse> getAccountList(String user);
+	public List<AcoountDetailsResponse> getAllAccountDetails(String user);
+	
+	
 	public List<AcoountDetailsResponse> getAccountDetailsByAccId(Integer accountId);
 	
 	public PageResponseDTO getAccountListPagination(String accountName,PageRequest pageRequest);

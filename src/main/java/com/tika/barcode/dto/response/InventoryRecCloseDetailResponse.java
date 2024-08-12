@@ -19,9 +19,10 @@ public class InventoryRecCloseDetailResponse {
     private String accountName;
     private Integer trnInvRecId;
     private Integer trnInvRecDetailsId;
-    private String batchNo;
+   // private String batchNo;
     private Integer itemId;
-    private String materialKey;
+    //private String materialKey;
+    private String itemNumber;
     private Integer reconCycleId;
     private String lotNo;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

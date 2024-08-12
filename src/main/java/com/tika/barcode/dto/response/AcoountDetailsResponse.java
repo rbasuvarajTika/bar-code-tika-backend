@@ -30,12 +30,17 @@ public class AcoountDetailsResponse {
 
 
     private Integer itemId;
-    private String materialKey;
-    private String itemDesc1;
-    private String batch;
+    //private String materialKey;
+    private String itemNumber;
+    //private String itemDesc1;
+    private String itemName;
+   // private String batch;
     private String lotNo;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
     private BigDecimal qtyInHand;
+    private String repName;
+    private String userName;
+   // private String userLogin;
 
 }

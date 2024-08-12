@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Inventory Reconciliation Report</title>
+</head>
+<body>
+    <h1 th:text="'Inventory Reconciliation Report'"></h1>
+    <img src="path/to/logo.png" alt="Company Logo" style="width: 100px;"/>
+    <br /><br />
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Account ID</th>
+                <th>Account Name</th>
+                <th>Inv Rec Id</th>
+                <th>Inv Rec Det Id</th>
+                <th>Item ID</th>
+                <th>Item Number</th>
+                <th>Recon Id</th>
+                <th>Lot No</th>
+                <th>Reconciliation Start Date</th>
+                <th>Quantity in Hand</th>
+                <th>Reconciliation Closed Date</th>
+                <th>Reconciliation Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="detail : ${details}">
+                <td th:text="${detail.accountId}"></td>
+                <td th:text="${detail.accountName}"></td>
+                 <td th:text="${detail.trnInvRecId}"></td>
+                  <td th:text="${detail.trnInvRecDetailsId}"></td>
+                <td th:text="${detail.itemId}"></td>
+                <td th:text="${detail.itemNumber}"></td>
+                <td th:text="${detail.lotNo}"></td>
+                 <td th:text="${detail.reconCycleId}"></td>
+                <td th:text="${detail.reconStartDate}"></td>
+                <td th:text="${detail.qtyInHand}"></td>
+                <td th:text="${detail.reconClosedDate}"></td>
+                <td th:text="${detail.reconStatus}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
