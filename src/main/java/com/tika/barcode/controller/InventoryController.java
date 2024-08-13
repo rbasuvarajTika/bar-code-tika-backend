@@ -114,17 +114,16 @@ public class InventoryController {
 	    }
 	    
 	    @GetMapping("/send-pdf-email")
-	    public ResponseEntity<String> sendEmailWithPdf(@RequestParam Integer trnInvRecId) {
+	    public NSServiceResponse<String> sendEmailWithPdf(@RequestParam Integer trnInvRecId) {
 	        try {
 	        	String recipientEmail = "rbasuvaraj@tikamobile.com";
 	            byte[] pdfContent = inventoryService.createInventoryPdf(trnInvRecId);
 	            String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
 	            emailService.sendEmailWithAttachment(recipientEmail, "Inventory Report", "Please find the attached inventory report.", fileName, pdfContent);
-	            return ResponseEntity.ok("Email sent successfully.");
+	            return ResponseHelper.createResponse(new NSServiceResponse<String>(),
+	            		"Email sent successfully.",CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	        } catch (Exception e) {
-	            e.printStackTrace(); // Log the exception
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending email.");
-	        }
+	           throw new RuntimeException("Email sent failed");	        }
 	    }
 
 
