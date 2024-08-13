@@ -31,6 +31,7 @@ import com.tika.barcode.dto.response.InventoryRecDetailResponse;
 import com.tika.barcode.dto.response.InventoryReconResonse;
 import com.tika.barcode.dto.response.NSServiceResponse;
 import com.tika.barcode.service.InventoryService;
+import com.tika.barcode.utility.EmailService;
 import com.tika.barcode.utility.ResponseHelper;
 
 @RestController
@@ -40,7 +41,8 @@ public class InventoryController {
 	
 	@Autowired
 	private InventoryService inventoryService;
-	
+	@Autowired
+	private EmailService emailService;
 	@SuppressWarnings("unchecked")
 	@PostMapping(InventoryConstant.INV_INSERT)
 	@CrossOrigin(origins = "*")
@@ -64,18 +66,18 @@ public class InventoryController {
 	@SuppressWarnings("unchecked")
 	@GetMapping(InventoryConstant.INV_REC_DETAIL)
 	@CrossOrigin(origins = "*")
-	public NSServiceResponse<List<InventoryRecDetailResponse>> getInvRecDetail(){
+	public NSServiceResponse<List<InventoryRecDetailResponse>> getInvRecDetail(@RequestParam String username){
 		return ResponseHelper.createResponse(new NSServiceResponse<List<InventoryRecDetailResponse>>(),
-				inventoryService.getInvRecDetails(),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
+				inventoryService.getInvRecDetails(username),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 		
 	}
 	
 	@SuppressWarnings("unchecked")
 	@GetMapping(InventoryConstant.INV_REC_CLOSE_DETAIL)
 	@CrossOrigin(origins = "*")
-	public NSServiceResponse<List<InventoryRecCloseDetailResponse>> getInvRecDetailClose(){
+	public NSServiceResponse<List<InventoryRecCloseDetailResponse>> getInvRecDetailClose(@RequestParam String username,@RequestParam Integer trnInvRecId){
 		return ResponseHelper.createResponse(new NSServiceResponse<List<InventoryRecCloseDetailResponse>>(),
-				inventoryService.getInvRecCloseDetails(),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
+				inventoryService.getInvRecCloseDetails(username,trnInvRecId),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 		
 	}
 	
@@ -110,12 +112,20 @@ public class InventoryController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
+	    
+	    @GetMapping("/send-pdf-email")
+	    public ResponseEntity<String> sendEmailWithPdf(@RequestParam Integer trnInvRecId) {
+	        try {
+	        	String recipientEmail = "rbasuvaraj@tikamobile.com";
+	            byte[] pdfContent = inventoryService.createInventoryPdf(trnInvRecId);
+	            String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+	            emailService.sendEmailWithAttachment(recipientEmail, "Inventory Report", "Please find the attached inventory report.", fileName, pdfContent);
+	            return ResponseEntity.ok("Email sent successfully.");
+	        } catch (Exception e) {
+	            e.printStackTrace(); // Log the exception
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending email.");
+	        }
+	    }
 
-//	    private List<InventoryRecCloseDetailResponse> fetchInventoryData() {
-//	        // Replace with actual data retrieval logic
-//	        return List.of(
-//	                new InventoryRecCloseDetailResponse(1, "Account 1", 1, 1, "Item123", 1, "Lot123", LocalDateTime.now(), new BigDecimal("100"), LocalDate.now(), "Closed")
-//	        );
-//	    }
-	
+
 }

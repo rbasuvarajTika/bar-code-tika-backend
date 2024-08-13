@@ -13,25 +13,21 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryRecCloseDetailResponse {
-	
+public class InventoryRecClosePdfResponse {
 	private Integer accountId;
-    private String accountName;
-    private Integer trnInvRecId;
-    private Integer trnInvRecDetailsId;
-    private Integer itemId;
-    private String itemNumber;
-    private Integer reconCycleId;
+	private String accountName;
+	private String itemNumber;
+    private String itemName;
     private String lotNo;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime reconStartDate;
-    private BigDecimal qtyInHand;
+    private String reconStartDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate reconClosedDate;
-    private String reconStatus;
-    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate expiryDate;
+    private BigDecimal qtyInHand;
+       
+
 }

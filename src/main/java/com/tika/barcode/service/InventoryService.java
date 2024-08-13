@@ -1,6 +1,5 @@
 package com.tika.barcode.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.tika.barcode.dto.request.AddInventoryRequest;
@@ -24,9 +23,9 @@ public interface InventoryService {
 	
 	public List<InventoryReconResonse> getInvRecByAccIdAndUser(String user);
 	
-	public List<InventoryRecDetailResponse> getInvRecDetails();
+	public List<InventoryRecDetailResponse> getInvRecDetails(String username);
 	
-	public List<InventoryRecCloseDetailResponse> getInvRecCloseDetails();
+	public List<InventoryRecCloseDetailResponse> getInvRecCloseDetails(String username,Integer trnInvRecId);
 	
 	public String closeInventoryRecon(CloseInventoryRequest closeInventoryRequest);
 	
