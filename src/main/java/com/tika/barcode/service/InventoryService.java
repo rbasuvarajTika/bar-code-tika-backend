@@ -15,7 +15,7 @@ import com.tika.barcode.dto.response.InventoryReconResonse;
 public interface InventoryService {
 	
 	public Integer initiateInventoryProc(InitiateInventoryRequest initiateInventoryRequest);
-	public Integer addInventoryProc(AddInventoryRequest addInventoryRequest);
+	public void addInventoryProc(AddInventoryRequest addInventoryRequest);
 	public String modifyInventoryProc(ModifyInventoryRequest modifyInventoryRequest);
 	public String submitInventoryProc(SubmitInventoryRequest submitInventoryRequest);
 	
@@ -33,5 +33,7 @@ public interface InventoryService {
 	
 	//public byte[] generatePdf(Integer trnInvRecId) throws IOException;
 	public byte[] createInventoryPdf(Integer trnInvRecId) throws Exception;
+	
+	public String getEmail(String user);
 
 }

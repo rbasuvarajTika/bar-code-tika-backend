@@ -1,6 +1,7 @@
 package com.tika.barcode.service.impl;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.tika.barcode.dto.response.ItemDetailsResponse;
 import com.tika.barcode.service.ItemDetailsService;
+import com.tika.barcode.constants.QueryConstant;
 
 @Service
 public class ItemDetailsServiceImpl implements ItemDetailsService {
@@ -18,8 +20,8 @@ public class ItemDetailsServiceImpl implements ItemDetailsService {
 
 	@Override
 	public List<ItemDetailsResponse> getItemDetails() {
-		List<Object[]> queryResult = entityManager.createNativeQuery("select ITEM_ID,ITEM_NUMBER, "
-				+ "ITEM_DESC1  ITEM_NAME \r\n" + "from DIM_ITEM where ITEM_GROUP_NAME='Bio-Excel'").getResultList();
+		//SELECT_ITEM_DETAILS_DIM_ITEM
+		List<Object[]> queryResult = entityManager.createNativeQuery(QueryConstant.SELECT_ITEM_DETAILS_DIM_ITEM).getResultList();
 
 		List<ItemDetailsResponse> itemDetailsResponse = queryResult.stream().map(this::mapToObjectArrayItemResponse)
 				.collect(Collectors.toList());

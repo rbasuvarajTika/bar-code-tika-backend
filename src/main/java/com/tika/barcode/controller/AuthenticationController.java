@@ -1,6 +1,7 @@
 package com.tika.barcode.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class AuthenticationController {
     
     /** Login a User.*/
     @SuppressWarnings("unchecked")
-	@PostMapping("/signin")
+	@PostMapping(CommonConstants.SIGNIN)
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public NSServiceResponse<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
     	return ResponseHelper.createResponse(new NSServiceResponse<JwtAuthenticationResponse>(), 

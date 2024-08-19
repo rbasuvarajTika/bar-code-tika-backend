@@ -1,6 +1,7 @@
 package com.tika.barcode.service.impl;
 
 import java.math.BigDecimal;
+
 import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import com.tika.barcode.dto.response.AccountResponse;
 import com.tika.barcode.dto.response.AcoountDetailsResponse;
 import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.AccountService;
+import com.tika.barcode.constants.QueryConstant;
 
 
 @Service
@@ -39,15 +41,17 @@ public class AccountServiceImpl implements AccountService {
 //				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
 //				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
 //				+ "where c.TERRITORY_ID=943").getResultList();
-		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
-				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
-				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME,\r\n"
-				+ "concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN \r\n"
-				+ "from DIM_ACCOUNT b \r\n"
-				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-				+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
-				+ "where u.USER_NAME=?1").setParameter(1, user).getResultList();
+		//SELECT_ACC_LIST_BY_USERNAME
+//		List<Object[]> queryResult = entityManager.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+//				+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
+//				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME,\r\n"
+//				+ "concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN \r\n"
+//				+ "from DIM_ACCOUNT b \r\n"
+//				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+//				+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
+//				+ "where u.USER_NAME=?1").setParameter(1, user).getResultList();
+		List<Object[]> queryResult = entityManager.createNativeQuery(QueryConstant.SELECT_ACC_LIST_BY_USERNAME).setParameter(1, user).getResultList();
 
 		List<AccountResponse> accountResponses = queryResult.stream().map(this::mapToObjectArrayAccResponse)
 				.collect(Collectors.toList());
@@ -66,18 +70,9 @@ public class AccountServiceImpl implements AccountService {
 //						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
 //						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" )
 //				.getResultList();
-		
+		//SELECT_ACC_DET_LIST_BY_USERNAME
 		List<Object[]> queryResult = entityManager
-				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],"
-						+ "b.ZIP,d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,a.LOT_NO,"
-						+ "a.[Expiry_Date],a.Total_Stock QTY_IN_HAND\r\n"
-						+ ",concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN\r\n"
-						+ "from FCT_CONSIGNMENT_INVENTORY a\r\n"
-						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
-						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n"
-						+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
-						+ "where u.USER_NAME=?1")
+				.createNativeQuery(QueryConstant.SELECT_ACC_DET_LIST_BY_USERNAME)
 						//+ "where b.ACCOUNT_ID=883" )
 				.setParameter(1, user).getResultList();
 
@@ -86,17 +81,20 @@ public class AccountServiceImpl implements AccountService {
 		
 		return acoountDetailsResponses;
 	}
-
+		//SELECT_ACC_DET_BY_ACCID
 	@Override
 	public List<AcoountDetailsResponse> getAccountDetailsByAccId(Integer accountId) {
+//		List<Object[]> queryResult = entityManager
+//				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
+//						+ "b.CITY,b.STATE,b.ZIP,\r\n"
+//						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,'AB1235' LOT_NO,a.Expiry_Date,"
+//						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
+//						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
+//						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+//						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" + "where b.ACCOUNT_ID=?1")
+//				.setParameter(1, accountId).getResultList();
 		List<Object[]> queryResult = entityManager
-				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
-						+ "b.CITY,b.STATE,b.ZIP,\r\n"
-						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,'AB1235' LOT_NO,a.Expiry_Date,"
-						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
-						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
-						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" + "where b.ACCOUNT_ID=?1")
+				.createNativeQuery(QueryConstant.SELECT_ACC_DET_BY_ACCID)
 				.setParameter(1, accountId).getResultList();
 
 		List<AcoountDetailsResponse> acoountDetailsResponses = queryResult.stream()
@@ -117,24 +115,28 @@ public class AccountServiceImpl implements AccountService {
 //				+ "from DIM_ACCOUNT b \r\n" + "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
 //				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)").toString();
 		
-		String selectQuery = new StringBuilder().append("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,"
-				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME"
-				+ "from DIM_ACCOUNT b "
-				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID) "
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID) "
-				+ "where c.TERRITORY_ID=943").toString();
+		//PAG_SELECT_ACC_LIST_BY_TER_ID_943
+//		String selectQuery = new StringBuilder().append("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,"
+//				+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME"
+//				+ "from DIM_ACCOUNT b "
+//				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID) "
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID) "
+//				+ "where c.TERRITORY_ID=943").toString();
 		
-		String countQuery = new StringBuilder().append("select COUNT(*) "
-				+ "from DIM_ACCOUNT b "
-				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID) "
-				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID) "
-				+ "where c.TERRITORY_ID=943").toString();
+		//PAG_SELECT_COUNT_ACC_LIST_BY_TER_ID_943
+//		String countQuery = new StringBuilder().append("select COUNT(*) "
+//				+ "from DIM_ACCOUNT b "
+//				+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID) "
+//				+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID) "
+//				+ "where c.TERRITORY_ID=943").toString();
+		String selectQuery="";
+		String countQuery="";
 		
 		if(accountName!=null) {
 			if(!accountName.isEmpty()) {
-			selectQuery = new StringBuilder().append(selectQuery).append(" WHERE b.ACCOUNT_NAME LIKE  ").append("'%")
+			selectQuery = new StringBuilder().append(QueryConstant.PAG_SELECT_ACC_LIST_BY_TER_ID_943).append(QueryConstant.PAG_WHERE_ACC_NAME_LIKE).append("'%")
 					.append(accountName).append("%'").toString();
-			countQuery = new StringBuilder().append(countQuery).append(" WHERE b.ACCOUNT_NAME LIKE  ").append("'%")
+			countQuery = new StringBuilder().append(QueryConstant.PAG_SELECT_COUNT_ACC_LIST_BY_TER_ID_943).append(QueryConstant.PAG_WHERE_ACC_NAME_LIKE).append("'%")
 					.append(accountName).append("%'").toString();
 			}
 		}
@@ -184,20 +186,28 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public PageResponseDTO getAccountDetailsByAccIdPagination(Integer accountId, PageRequest pageRequest) {
+		//PAG_SELECT_ACC_DET_BY_ACC_ID
+//		Query query = (Query) entityManager
+//				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
+//						+ "b.CITY,b.STATE,b.ZIP,\r\n"
+//						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,'AB1235' LOT_NO,a.Expiry_Date,"
+//						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
+//						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
+//						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+//						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" + "where b.ACCOUNT_ID=?1")
+//				.setParameter(1, accountId);
 		Query query = (Query) entityManager
-				.createNativeQuery("select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
-						+ "b.CITY,b.STATE,b.ZIP,\r\n"
-						+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,'AB1235' LOT_NO,a.Expiry_Date,"
-						+ "a.Total_Stock QTY_IN_HAND\r\n" + "from FCT_CONSIGNMENT_INVENTORY a \r\n"
-						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
-						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" + "where b.ACCOUNT_ID=?1")
+				.createNativeQuery(QueryConstant.PAG_SELECT_ACC_DET_BY_ACC_ID)
 				.setParameter(1, accountId);
+		//PAG_SELECT_COUNT_ACC_DET_BY_ACC_ID
+//		Query queryCount = (Query) entityManager
+//				.createNativeQuery("select COUNT(*) from FCT_CONSIGNMENT_INVENTORY a \r\n"
+//						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
+//						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+//						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" + "where b.ACCOUNT_ID=?1")
+//				.setParameter(1, accountId);
 		Query queryCount = (Query) entityManager
-				.createNativeQuery("select COUNT(*) from FCT_CONSIGNMENT_INVENTORY a \r\n"
-						+ "join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
-						+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
-						+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n" + "where b.ACCOUNT_ID=?1")
+				.createNativeQuery(QueryConstant.PAG_SELECT_COUNT_ACC_DET_BY_ACC_ID)
 				.setParameter(1, accountId);
 		int pageNumber = pageRequest.getPageNumber();
 		int pageSize = pageRequest.getPageSize();

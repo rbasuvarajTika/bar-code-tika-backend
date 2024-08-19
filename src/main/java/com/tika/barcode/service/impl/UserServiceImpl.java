@@ -1,6 +1,8 @@
 package com.tika.barcode.service.impl;
 
 import java.util.Date;
+
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,8 @@ import com.tika.barcode.enums.ErrorCodes;
 import com.tika.barcode.exceptions.NSException;
 import com.tika.barcode.repo.UserRepository;
 import com.tika.barcode.service.UserService;
+import com.tika.barcode.constants.ParameterConstant;
+import com.tika.barcode.constants.ProcedureConstant;
 
 
 
@@ -47,52 +51,52 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public String createUser(SignUpRequest request) {
-		StoredProcedureQuery query = entityManager.createStoredProcedureQuery("usp_App_USER_Add");
-		query.registerStoredProcedureParameter("USER", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("FIRST_NAME", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("MIDDLE_NAME", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("LAST_NAME", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("ADDRESS1", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("ADDRESS2", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("CITY", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("STATE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("ZIP", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("ROLE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("USER_NAME", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("USER_EMAIL", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("USER_PHONE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("USER_MOBILE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("PREFERRED_NAME", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("SALES_FORCE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("PASSWORD", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("CONFIRM_PASSWORD", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("PASSWORD_UPDATED_DATE", Date.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("USER_TYPE", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("OTHER_PASSWORD", String.class, ParameterMode.IN);
-		query.registerStoredProcedureParameter("USER_IMAGE_URL", String.class, ParameterMode.IN);
-		query.setParameter("USER", request.getCreatedUser());
-		query.setParameter("FIRST_NAME", request.getFirstName());
-		query.setParameter("MIDDLE_NAME", request.getMiddleName());
-		query.setParameter("LAST_NAME", request.getLastName());
-		query.setParameter("ADDRESS1", request.getAddress());
-		query.setParameter("ADDRESS2", request.getAddress());
-		query.setParameter("CITY", request.getCity());
-		query.setParameter("STATE", request.getState());
-		query.setParameter("ZIP", request.getZip());
-		query.setParameter("ROLE", request.getRole());
-		query.setParameter("USER_NAME", request.getUserName());
-		query.setParameter("USER_EMAIL", request.getEmail());
-		query.setParameter("USER_PHONE", request.getPhone());
-		query.setParameter("USER_MOBILE", request.getPhone());
-		query.setParameter("PREFERRED_NAME", request.getUserName());
-		query.setParameter("SALES_FORCE", request.getSalesForce());
+		StoredProcedureQuery query = entityManager.createStoredProcedureQuery(ProcedureConstant.USP_APP_USER_ADD);
+		query.registerStoredProcedureParameter(ParameterConstant.USER, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.FIRST_NAME, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.MIDDLE_NAME, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.LAST_NAME, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.ADDRESS1, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.ADDRESS2, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.CITY, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.STATE, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.ZIP, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.ROLE, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.USER_NAME, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.USER_EMAIL, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.USER_PHONE, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.USER_MOBILE, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.PREFERRED_NAME, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.SALES_FORCE, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.PASSWORD, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.CONFIRM_PASSWORD, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.PASSWORD_UPDATED_DATE, Date.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.USER_TYPE, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.OTHER_PASSWORD, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.USER_IMAGE_URL, String.class, ParameterMode.IN);
+		query.setParameter(ParameterConstant.USER, request.getCreatedUser());
+		query.setParameter(ParameterConstant.FIRST_NAME, request.getFirstName());
+		query.setParameter(ParameterConstant.MIDDLE_NAME, request.getMiddleName());
+		query.setParameter(ParameterConstant.LAST_NAME, request.getLastName());
+		query.setParameter(ParameterConstant.ADDRESS1, request.getAddress());
+		query.setParameter(ParameterConstant.ADDRESS2, request.getAddress());
+		query.setParameter(ParameterConstant.CITY, request.getCity());
+		query.setParameter(ParameterConstant.STATE, request.getState());
+		query.setParameter(ParameterConstant.ZIP, request.getZip());
+		query.setParameter(ParameterConstant.ROLE, request.getRole());
+		query.setParameter(ParameterConstant.USER_NAME, request.getUserName());
+		query.setParameter(ParameterConstant.USER_EMAIL, request.getEmail());
+		query.setParameter(ParameterConstant.USER_PHONE, request.getPhone());
+		query.setParameter(ParameterConstant.USER_MOBILE, request.getPhone());
+		query.setParameter(ParameterConstant.PREFERRED_NAME, request.getUserName());
+		query.setParameter(ParameterConstant.SALES_FORCE, request.getSalesForce());
 		String encodedPassword = passwordEncoder.encode(request.getPassword());
-		query.setParameter("PASSWORD", encodedPassword);
-		query.setParameter("CONFIRM_PASSWORD", encodedPassword);
-		query.setParameter("PASSWORD_UPDATED_DATE", request.getPasswordUpdatedDate());
-		query.setParameter("USER_TYPE", request.getType());
-		query.setParameter("OTHER_PASSWORD", encodedPassword);
-		query.setParameter("USER_IMAGE_URL", request.getImage());
+		query.setParameter(ParameterConstant.PASSWORD, encodedPassword);
+		query.setParameter(ParameterConstant.CONFIRM_PASSWORD, encodedPassword);
+		query.setParameter(ParameterConstant.PASSWORD_UPDATED_DATE, request.getPasswordUpdatedDate());
+		query.setParameter(ParameterConstant.USER_TYPE, request.getType());
+		query.setParameter(ParameterConstant.OTHER_PASSWORD, encodedPassword);
+		query.setParameter(ParameterConstant.USER_IMAGE_URL, request.getImage());
 		query.execute();
 		return "User created successfully";
 	}

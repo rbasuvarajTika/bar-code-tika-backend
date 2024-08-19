@@ -113,10 +113,17 @@ public class InventoryController {
 	        }
 	    }
 	    
-	    @GetMapping("/send-pdf-email")
-	    public NSServiceResponse<String> sendEmailWithPdf(@RequestParam Integer trnInvRecId) {
+	    @SuppressWarnings("unchecked")
+		@GetMapping("/send-pdf-email")
+	    public NSServiceResponse<String> sendEmailWithPdf(@RequestParam Integer trnInvRecId,@RequestParam(required = false) String username) {
 	        try {
 	        	String recipientEmail = "rbasuvaraj@tikamobile.com";
+	        	if(username==null) {
+	        		recipientEmail = "rbasuvaraj@tikamobile.com";
+	        	}else {
+	        		recipientEmail=inventoryService.getEmail(username);
+	        	}
+	        	
 	            byte[] pdfContent = inventoryService.createInventoryPdf(trnInvRecId);
 	            String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
 	            emailService.sendEmailWithAttachment(recipientEmail, "Inventory Report", "Please find the attached inventory report.", fileName, pdfContent);

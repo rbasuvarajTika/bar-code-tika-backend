@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.tika.barcode.constants.QueryConstant;
 import com.tika.barcode.dto.response.ConsignInventoryResponse;
 import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.ConsignInventoryService;
@@ -27,26 +28,29 @@ public class ConsignInventoryServiceImpl implements ConsignInventoryService {
 
 	@Override
 	public PageResponseDTO getConsignInventByAccId(Integer accountId, PageRequest pageRequest) {
+		//PAG_SELECT_CONS_INV_BY_ACC_ID
 		
-		String selectQuery = new StringBuilder().append("SELECT fci.ACCOUNT_ID,\r\n"
-				+ "      fci.TERRITORY_ID\r\n"
-				+ "      ,fci.ITEM_ID\r\n"
-				+ "      ,fci.Batch\r\n"
-				+ "      ,fci.Expiry_Date\r\n"
-				+ "      ,fci.Total_Stock\r\n"
-				+ "      ,fci.MATERIAL_KEY\r\n"
-				+ "      ,fci.CUSTOMER\r\n"
-				+ "      ,fci.CUSTOMER_NAME\r\n"
-				+ "      ,fci.RFRSH_DATE\r\n"
-				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci"
-				+ "  WHERE fci.ACCOUNT_ID=?1").toString();
+//		String selectQuery = new StringBuilder().append("SELECT fci.ACCOUNT_ID,\r\n"
+//				+ "      fci.TERRITORY_ID\r\n"
+//				+ "      ,fci.ITEM_ID\r\n"
+//				+ "      ,fci.Batch\r\n"
+//				+ "      ,fci.Expiry_Date\r\n"
+//				+ "      ,fci.Total_Stock\r\n"
+//				+ "      ,fci.MATERIAL_KEY\r\n"
+//				+ "      ,fci.CUSTOMER\r\n"
+//				+ "      ,fci.CUSTOMER_NAME\r\n"
+//				+ "      ,fci.RFRSH_DATE\r\n"
+//				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci"
+//				+ "  WHERE fci.ACCOUNT_ID=?1").toString();
+		//PAG_SELECT_COUNT_CONS_INV_BY_ACC_ID
+//		String countQuery = new StringBuilder().append("SELECT COUNT(*) "
+//				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci"
+//				+ "  WHERE fci.ACCOUNT_ID=?1").toString();
 		
-		String countQuery = new StringBuilder().append("SELECT COUNT(*) "
-				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci"
-				+ "  WHERE fci.ACCOUNT_ID=?1").toString();
-		
-		Query query = (Query) entityManager.createNativeQuery(selectQuery).setParameter(1,accountId);
-		Query queryCount = (Query) entityManager.createNativeQuery(countQuery).setParameter(1,accountId);
+		Query query = (Query) entityManager.createNativeQuery(QueryConstant.PAG_SELECT_FCT_CONS_INV
+				+ QueryConstant.PAG_WHERE_FCT_CONS_INV).setParameter(1,accountId);
+		Query queryCount = (Query) entityManager.createNativeQuery(QueryConstant.PAG_SELECT_COUNT_FCT_CONS_INV 
+			+QueryConstant.PAG_WHERE_FCT_CONS_INV ).setParameter(1,accountId);
 		int pageNumber = pageRequest.getPageNumber();
 		int pageSize = pageRequest.getPageSize();
 		query.setFirstResult((pageNumber) * pageSize);
@@ -81,23 +85,24 @@ public class ConsignInventoryServiceImpl implements ConsignInventoryService {
 
 	@Override
 	public PageResponseDTO getAllConsignInvent(PageRequest pageRequest) {
-		String selectQuery = new StringBuilder().append("SELECT fci.ACCOUNT_ID,\r\n"
-				+ "      fci.TERRITORY_ID\r\n"
-				+ "      ,fci.ITEM_ID\r\n"
-				+ "      ,fci.Batch\r\n"
-				+ "      ,fci.Expiry_Date\r\n"
-				+ "      ,fci.Total_Stock\r\n"
-				+ "      ,fci.MATERIAL_KEY\r\n"
-				+ "      ,fci.CUSTOMER\r\n"
-				+ "      ,fci.CUSTOMER_NAME\r\n"
-				+ "      ,fci.RFRSH_DATE\r\n"
-				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci").toString();
 		
-		String countQuery = new StringBuilder().append("SELECT COUNT(*) "
-				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci").toString();
+//		String selectQuery = new StringBuilder().append("SELECT fci.ACCOUNT_ID,\r\n"
+//				+ "      fci.TERRITORY_ID\r\n"
+//				+ "      ,fci.ITEM_ID\r\n"
+//				+ "      ,fci.Batch\r\n"
+//				+ "      ,fci.Expiry_Date\r\n"
+//				+ "      ,fci.Total_Stock\r\n"
+//				+ "      ,fci.MATERIAL_KEY\r\n"
+//				+ "      ,fci.CUSTOMER\r\n"
+//				+ "      ,fci.CUSTOMER_NAME\r\n"
+//				+ "      ,fci.RFRSH_DATE\r\n"
+//				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci").toString();
 		
-		Query query = (Query) entityManager.createNativeQuery(selectQuery);
-		Query queryCount = (Query) entityManager.createNativeQuery(countQuery);
+//		String countQuery = new StringBuilder().append("SELECT COUNT(*) "
+//				+ "  FROM FCT_CONSIGNMENT_INVENTORY fci").toString();
+		
+		Query query = (Query) entityManager.createNativeQuery(QueryConstant.PAG_SELECT_FCT_CONS_INV);
+		Query queryCount = (Query) entityManager.createNativeQuery(QueryConstant.PAG_SELECT_COUNT_FCT_CONS_INV);
 		int pageNumber = pageRequest.getPageNumber();
 		int pageSize = pageRequest.getPageSize();
 		query.setFirstResult((pageNumber) * pageSize);
