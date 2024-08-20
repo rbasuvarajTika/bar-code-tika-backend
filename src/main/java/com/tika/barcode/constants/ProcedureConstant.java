@@ -8,4 +8,9 @@ public class ProcedureConstant {
 	public static final String USP_INVENTORY_CLOSE ="usp_Inventory_Close";
 	public static final String USP_APP_USER_ADD ="usp_App_USER_Add";
 	
+	/* Scan support service */
+	
+	public static final String USP_SCAN_SUPPORT_ADD ="usp_scan_support_add";
+	
+	
 }

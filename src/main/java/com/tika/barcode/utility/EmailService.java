@@ -1,14 +1,12 @@
 package com.tika.barcode.utility;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 
 @Component
 public class EmailService {
@@ -29,6 +27,21 @@ public class EmailService {
 
         // Add attachment
         messageHelper.addAttachment(attachmentName, new ByteArrayDataSource(attachmentData, "application/pdf"));
+
+        javaMailSender.send(mimeMessage);
+    }
+    
+
+    public void sendEmail(String to, String subject, String text) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+
+        messageHelper.setTo(to);
+        messageHelper.setSubject(subject);
+        messageHelper.setText(text);
+
+        // Add attachment
+       // messageHelper.addAttachment(attachmentName, new ByteArrayDataSource(attachmentData, "application/pdf"));
 
         javaMailSender.send(mimeMessage);
     }

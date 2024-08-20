@@ -1,15 +1,9 @@
 package com.tika.barcode.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,6 +37,7 @@ public class InventoryController {
 	private InventoryService inventoryService;
 	@Autowired
 	private EmailService emailService;
+	
 	@SuppressWarnings("unchecked")
 	@PostMapping(InventoryConstant.INV_INSERT)
 	@CrossOrigin(origins = "*")
@@ -127,6 +122,7 @@ public class InventoryController {
 	            byte[] pdfContent = inventoryService.createInventoryPdf(trnInvRecId);
 	            String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
 	            emailService.sendEmailWithAttachment(recipientEmail, "Inventory Report", "Please find the attached inventory report.", fileName, pdfContent);
+	           
 	            return ResponseHelper.createResponse(new NSServiceResponse<String>(),
 	            		"Email sent successfully.",CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 	        } catch (Exception e) {

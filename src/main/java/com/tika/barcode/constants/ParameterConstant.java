@@ -31,6 +31,9 @@ public class ParameterConstant {
 	public static final String PASSWORD_UPDATED_DATE ="PASSWORD_UPDATED_DATE";
 	public static final String OTHER_PASSWORD ="OTHER_PASSWORD";
 	public static final String USER_IMAGE_URL ="USER_IMAGE_URL";
+	public static final String ISSUE_DETAILS ="ISSUE_DETAILS";
+	public static final String ISSUE_STATUS ="ISSUE_STATUS";
+	public static final String SCAN_SUPPORT_NATIFICATION_NAME ="SUPPORT_DETAILS";
 	
 	
 }
