@@ -1,12 +1,9 @@
 package com.tika.barcode.service.impl;
 
 import java.io.ByteArrayOutputStream;
-
-
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,23 +21,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
+import com.tika.barcode.constants.ParameterConstant;
+import com.tika.barcode.constants.ProcedureConstant;
+import com.tika.barcode.constants.QueryConstant;
 import com.tika.barcode.dto.request.AddInventoryRequest;
+import com.tika.barcode.dto.request.AddNotificationTranRequest;
 import com.tika.barcode.dto.request.CloseInventoryRequest;
 import com.tika.barcode.dto.request.InitiateInventoryRequest;
 import com.tika.barcode.dto.request.InventoryReconRequest;
 import com.tika.barcode.dto.request.ModifyInventoryRequest;
 import com.tika.barcode.dto.request.SubmitInventoryRequest;
-import com.tika.barcode.dto.response.AccountResponse;
 import com.tika.barcode.dto.response.AcoountDetailsResponse;
 import com.tika.barcode.dto.response.InventoryRecCloseDetailResponse;
 import com.tika.barcode.dto.response.InventoryRecClosePdfResponse;
 import com.tika.barcode.dto.response.InventoryRecDetailResponse;
 import com.tika.barcode.dto.response.InventoryReconResonse;
+import com.tika.barcode.dto.response.NotificationConfEmailResponse;
 import com.tika.barcode.service.InventoryService;
+import com.tika.barcode.service.NotificationConfigService;
+import com.tika.barcode.service.NotificationTranService;
+import com.tika.barcode.utility.EmailService;
 import com.tika.barcode.utility.PdfGenerator;
-import com.tika.barcode.constants.ParameterConstant;
-import com.tika.barcode.constants.ProcedureConstant;
-import com.tika.barcode.constants.QueryConstant;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
@@ -49,6 +50,12 @@ public class InventoryServiceImpl implements InventoryService {
 	private EntityManager entityManager;
 	@Autowired
 	private PdfGenerator pdfGenerator;
+	@Autowired
+	EmailService emailService;
+	@Autowired
+	NotificationConfigService notificationConfigService;
+	@Autowired
+	NotificationTranService notificationTranService;
 
 	@Override
 	public Integer initiateInventoryProc(InitiateInventoryRequest initiateInventoryRequest) {
@@ -475,5 +482,54 @@ public class InventoryServiceImpl implements InventoryService {
 		return email;
 	}
 
+	@Override
+	public String sendInventoryPdf(Integer trnInvRecId, String username) {
+		NotificationConfEmailResponse confEmailResponse = new NotificationConfEmailResponse();
+		String recipientEmail = "rbasuvaraj@tikamobile.com";
+		String errorMsg = "NA";
+		String deliveryStatus="success";
+		//String user = "jsmith";
+		try {
+			
+	    	if(username==null) {
+	    		recipientEmail = "rbasuvaraj@tikamobile.com";
+	    	}else {
+	    		recipientEmail=getEmail(username);
+	    	}
+	    	
+	        byte[] pdfContent = createInventoryPdf(trnInvRecId);
+	        confEmailResponse = notificationConfigService.getNotiConfByName(ParameterConstant.CLOSE_DETAILS_PDF);
+	       // if(confEmailResponse!=null) {
+				//String subject =  confEmailResponse.getNotificationSubject().replace("{USER_NAME}",request.getUser());
+	        	String accountName = getAccountNameByInvRecId(trnInvRecId);
+				String subject =  confEmailResponse.getNotificationSubject().replaceAll("\\{.*?\\}",accountName);
+	        String fileName = "InventoryReport_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+	        emailService.sendEmailWithAttachment(recipientEmail, subject,confEmailResponse.getNotificationBody(), fileName, pdfContent);
+	        
+	       // }
+	        return "send pdf to mail successfully";
+		}catch(Exception e) {
+			errorMsg = e.getMessage();
+			deliveryStatus="failed";
+			throw new RuntimeException("Error in send inevtory pdf",e);
+		}finally {
+			AddNotificationTranRequest addNotificationTranRequest = new AddNotificationTranRequest();
+			addNotificationTranRequest.setNotificationId(confEmailResponse.getNotificationId());
+			addNotificationTranRequest.setUser(username);
+			addNotificationTranRequest.setUserEmail(recipientEmail);
+			addNotificationTranRequest.setErrorMsg(errorMsg);
+			addNotificationTranRequest.setDeliveryStatus(deliveryStatus);
+			notificationTranService.addNotifficationTran(addNotificationTranRequest);
+			
+		}
+		
+		
+	}
+
+	private String getAccountNameByInvRecId(Integer trnInvRecId) {
+	List<Object> queryResult = entityManager.createNativeQuery(QueryConstant.SELECT_INV_REC_BY_INV_REC_ID).setParameter(1, trnInvRecId).getResultList();
+	String accountName = (String) queryResult.get(0).toString();
+	return accountName;
+	}
 
 }

@@ -34,6 +34,13 @@ public class ParameterConstant {
 	public static final String ISSUE_DETAILS ="ISSUE_DETAILS";
 	public static final String ISSUE_STATUS ="ISSUE_STATUS";
 	public static final String SCAN_SUPPORT_NATIFICATION_NAME ="SUPPORT_DETAILS";
+	public static final String CLOSE_DETAILS_PDF ="CLOSE_DETAILS_PDF";
+	public static final String ERROR_MSG ="ERROR_MESSAGE";
+	public static final String NOTIFCATION_ID ="NOTIFICATION_ID";
+	public static final String DELIVERY_STATUS ="DELIVERY_STATUS";
+	public static final String IN_PROGRESS ="INPROGRESS";
+	public static final String SUPPORT_ID ="SUPPORT_ID";
+	
 	
 	
 }

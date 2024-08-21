@@ -36,4 +36,5 @@ public interface InventoryService {
 	
 	public String getEmail(String user);
 
+	public String sendInventoryPdf(Integer trnInvRecId,String username);
 }

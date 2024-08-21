@@ -1,18 +1,16 @@
 package com.tika.barcode.dto.request;
 
 import lombok.AllArgsConstructor;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScanSupportRequest {
+public class ScanSupportUpdateRequest {
 	
 	private String user;
-	private String userEmail;
-	private String issueDetails;
+	private Integer supportId;
 	private String issueStatus;
 
 }

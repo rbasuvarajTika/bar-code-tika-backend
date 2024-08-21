@@ -37,6 +37,10 @@ public class QueryConstant {
 	public static final String SELECT_MAIL_DIM_USER_BY_NAME ="select USER_EMAIL \r\n"
 			+ "from DIM_USER \r\n"
 			+ "where USER_NAME=?1";
+	public static final String SELECT_INV_REC_BY_INV_REC_ID =" select b.ACCOUNT_NAME\r\n" 
+			+ " from TRN_INVENTORY_RECONCILE a \r\n"
+			+ "	join DIM_ACCOUNT b on (a.ACCOUNT_ID=b.ACCOUNT_ID)\r\n"
+			+ " where a.TRN_INV_REC_ID=?1 ";
 	/*END- QUERY - INVENTORY SERVICE */
 	
 	/*START- QUERY - ACCOUNT SERVICE */

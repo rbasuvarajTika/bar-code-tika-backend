@@ -13,4 +13,8 @@ public class ProcedureConstant {
 	public static final String USP_SCAN_SUPPORT_ADD ="usp_scan_support_add";
 	
 	
+	public static final String USP_NOTIFICATION_TRN_ADD ="usp_notification_tran_add";
+	
+	public static final String USP_SCAN_SUPPORT_EDIT ="usp_scan_support_edit";
+	
 }

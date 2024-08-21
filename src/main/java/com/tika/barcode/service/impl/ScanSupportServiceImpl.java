@@ -18,10 +18,13 @@ import org.springframework.stereotype.Service;
 import com.tika.barcode.constants.ParameterConstant;
 import com.tika.barcode.constants.ProcedureConstant;
 import com.tika.barcode.constants.QueryConstant;
+import com.tika.barcode.dto.request.AddNotificationTranRequest;
 import com.tika.barcode.dto.request.ScanSupportRequest;
+import com.tika.barcode.dto.request.ScanSupportUpdateRequest;
 import com.tika.barcode.dto.response.NotificationConfEmailResponse;
 import com.tika.barcode.dto.response.ScanSupportResponse;
 import com.tika.barcode.service.NotificationConfigService;
+import com.tika.barcode.service.NotificationTranService;
 import com.tika.barcode.service.ScanSupportService;
 import com.tika.barcode.utility.EmailService;
 
@@ -33,6 +36,8 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 	private NotificationConfigService notificationConfigService;
 	@Autowired
 	EmailService emailService;
+	@Autowired
+	NotificationTranService notificationTranService;
 	
 	 @Value("${support.details.recipient.email}")
 	    private String recipientEmail;
@@ -49,7 +54,7 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 			query.setParameter(ParameterConstant.USER, scanSupportRequest.getUser());
 			query.setParameter(ParameterConstant.USER_EMAIL, scanSupportRequest.getUserEmail());
 			query.setParameter(ParameterConstant.ISSUE_DETAILS, scanSupportRequest.getIssueDetails());
-			query.setParameter(ParameterConstant.ISSUE_STATUS, scanSupportRequest.getIssueStatus());
+			query.setParameter(ParameterConstant.ISSUE_STATUS, ParameterConstant.IN_PROGRESS);
 
 			query.execute();
 			return "Scan Support successfully";
@@ -61,13 +66,16 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 	
 	@Override
 	public String emailNotification(ScanSupportRequest request) {
-		try {
+		String errorMsg = "NA";
+		String deliveryStatus="success";
+		
 		NotificationConfEmailResponse confEmailResponse = notificationConfigService
 				.getNotiConfByName(ParameterConstant.SCAN_SUPPORT_NATIFICATION_NAME);
+		try {
 		if(confEmailResponse!=null) {
 			//String subject =  confEmailResponse.getNotificationSubject().replace("{USER_NAME}",request.getUser());
 			String subject =  confEmailResponse.getNotificationSubject().replaceAll("\\{.*?\\}",request.getUser());
-			emailService.sendEmail("rbasuvaraj@tikamobile.com", subject, 
+			emailService.sendEmail(recipientEmail, subject, 
 					request.getIssueDetails());
 			return "scan support added and e-mail send successfully";
 		}else {
@@ -75,7 +83,23 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 		}
 			
 		} catch (MessagingException e) {
+			errorMsg = e.getMessage();
+			deliveryStatus="failed";
 			throw new RuntimeException("send e-mail failed",e);
+		}catch(Exception e) {
+			errorMsg = e.getMessage();
+			deliveryStatus="failed";
+			throw new RuntimeException("send e-mail failed",e);
+		}
+		finally {
+			AddNotificationTranRequest addNotificationTranRequest = new AddNotificationTranRequest();
+			addNotificationTranRequest.setNotificationId(confEmailResponse.getNotificationId());
+			addNotificationTranRequest.setUser(request.getUser());
+			addNotificationTranRequest.setUserEmail(recipientEmail);
+			addNotificationTranRequest.setErrorMsg(errorMsg);
+			addNotificationTranRequest.setDeliveryStatus(deliveryStatus);
+			notificationTranService.addNotifficationTran(addNotificationTranRequest);
+			
 		}
 	}
 
@@ -117,6 +141,26 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 			response.setUpdateDate(updateDate.toLocalDateTime());
 
 		return response;
+	}
+
+	@Override
+	public String updateScanSupport(ScanSupportUpdateRequest updateScanSupport) {
+		try {
+			StoredProcedureQuery query = entityManager.createStoredProcedureQuery(ProcedureConstant.USP_SCAN_SUPPORT_EDIT);
+			query.registerStoredProcedureParameter(ParameterConstant.USER, String.class, ParameterMode.IN);
+			query.registerStoredProcedureParameter(ParameterConstant.SUPPORT_ID, Integer.class, ParameterMode.IN);
+			query.registerStoredProcedureParameter(ParameterConstant.ISSUE_STATUS, String.class, ParameterMode.IN);
+
+			query.setParameter(ParameterConstant.USER, updateScanSupport.getUser());
+			query.setParameter(ParameterConstant.SUPPORT_ID, updateScanSupport.getSupportId());
+			query.setParameter(ParameterConstant.ISSUE_STATUS, updateScanSupport.getIssueStatus());
+
+			query.execute();
+			return "Scan Support updated successfully";
+		}catch(Exception e) {
+			throw new RuntimeException(" scan suppport update failed",e);
+		}
+		
 	}
 
 }
