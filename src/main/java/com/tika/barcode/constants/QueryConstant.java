@@ -20,7 +20,7 @@ public class QueryConstant {
 			+ "from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"
 			+ "left join TRN_INVENTORY_RECONCILE b on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
 			+ "join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
-			+ "where b.RECON_STATUS IN ('Submit','Closed') and a.CREATED_USER=?1";
+			+ "where b.RECON_STATUS IN ('Submit','Closed') and b.CREATED_USER=?1";
 	public static final String SELECT_INREC_DET =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,a.TRN_INV_REC_ID,a.TRN_INV_REC_DETAIL_ID,a.BATCH_NO,"
 			+ "a.ITEM_ID,a.ITEM_CODE,a.LOT_NO,b.REC_CYCLE_ID,b.CREATED_DATE,A.QTY_IN_HAND,B.RECON_CLOSED_DATE,b.RECON_STATUS\r\n"
 			+ "from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"

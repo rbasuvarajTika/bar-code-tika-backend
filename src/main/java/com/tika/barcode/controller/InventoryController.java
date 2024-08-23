@@ -109,7 +109,7 @@ public class InventoryController {
 	    }
 	    
 	    @SuppressWarnings("unchecked")
-		@GetMapping("/send-pdf-email")
+		@GetMapping(InventoryConstant.SEND_PDF_EMAIL)
 	    public NSServiceResponse<String> sendEmailWithPdf(@RequestParam Integer trnInvRecId,@RequestParam(required = false) String username) {
 	        try {
 //	        	String recipientEmail = "rbasuvaraj@tikamobile.com";

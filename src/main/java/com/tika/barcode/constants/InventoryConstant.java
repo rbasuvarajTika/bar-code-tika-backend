@@ -13,6 +13,7 @@ public class InventoryConstant {
 	public static final String INV_REC_CLOSE_DETAIL ="/get/reconcile/closeDetails";
 	public static final String INV_CLOSE ="/close";
 	public static final String INV_CLOSE_DET_PDF ="/generate-pdf";
+	public static final String SEND_PDF_EMAIL ="/send-pdf-email";
 
 
 }
