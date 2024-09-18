@@ -15,10 +15,10 @@ public class QueryConstant {
 	public static final String GET_INVREC_BY_ACCID_AND_USER ="select a.TRN_INV_REC_ID,a.ACCOUNT_ID,a.RECON_STATUS,a.RECON_NOTES,a.CREATED_USER,"
 			+ " a.CREATED_DATE,a.UPDATED_USER,a.UPDATED_DATE from TRN_INVENTORY_RECONCILE a "
 			+ "	where a.CREATED_USER=?1 ";
-	public static final String GET_INVREC_DET_BY_STATUS_CLOSED_AND_SUBMIT_AND_CREATED_USER =" select distinct b.ACCOUNT_ID,c.ACCOUNT_NAME,a.TRN_INV_REC_ID,"
+	public static final String GET_INVREC_DET_BY_STATUS_CLOSED_AND_SUBMIT_AND_CREATED_USER =" select distinct b.ACCOUNT_ID,c.ACCOUNT_NAME,b.TRN_INV_REC_ID,"
 			+ "b.REC_CYCLE_ID,b.CREATED_DATE,b.RECON_CLOSED_DATE,b.RECON_STATUS\r\n"
-			+ "from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"
-			+ "left join TRN_INVENTORY_RECONCILE b on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
+			+ "from TRN_INVENTORY_RECONCILE b \r\n"
+			+ "left join TRN_INVENTORY_RECONCILE_DETAIL a on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
 			+ "join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
 			+ "where b.RECON_STATUS IN ('Submit','Closed') and b.CREATED_USER=?1";
 	public static final String SELECT_INREC_DET =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,a.TRN_INV_REC_ID,a.TRN_INV_REC_DETAIL_ID,a.BATCH_NO,"
