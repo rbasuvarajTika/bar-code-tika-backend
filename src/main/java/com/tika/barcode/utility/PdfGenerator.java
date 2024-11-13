@@ -1,6 +1,7 @@
 package com.tika.barcode.utility;
 
 import java.io.ByteArrayOutputStream;
+
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,7 +9,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Component

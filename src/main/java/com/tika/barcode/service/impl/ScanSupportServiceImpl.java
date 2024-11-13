@@ -1,15 +1,11 @@
 package com.tika.barcode.service.impl;
 
 import java.sql.Timestamp;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +23,9 @@ import com.tika.barcode.service.NotificationConfigService;
 import com.tika.barcode.service.NotificationTranService;
 import com.tika.barcode.service.ScanSupportService;
 import com.tika.barcode.utility.EmailService;
+
+import jakarta.mail.*;
+import jakarta.persistence.*;
 
 @Service
 public class ScanSupportServiceImpl implements ScanSupportService{

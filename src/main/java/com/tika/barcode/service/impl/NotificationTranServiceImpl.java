@@ -1,9 +1,6 @@
 package com.tika.barcode.service.impl;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
+
 
 import org.springframework.stereotype.Service;
 
@@ -11,6 +8,8 @@ import com.tika.barcode.constants.ParameterConstant;
 import com.tika.barcode.constants.ProcedureConstant;
 import com.tika.barcode.dto.request.AddNotificationTranRequest;
 import com.tika.barcode.service.NotificationTranService;
+
+import jakarta.persistence.*;
 
 @Service
 public class NotificationTranServiceImpl implements NotificationTranService {

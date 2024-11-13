@@ -1,14 +1,13 @@
 package com.tika.barcode.service.impl;
 
 import java.math.BigDecimal;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,6 +18,8 @@ import com.tika.barcode.constants.QueryConstant;
 import com.tika.barcode.dto.response.ConsignInventoryResponse;
 import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.ConsignInventoryService;
+
+import jakarta.persistence.*;
 
 @Service
 public class ConsignInventoryServiceImpl implements ConsignInventoryService {

@@ -1,17 +1,18 @@
 package com.tika.barcode.service.impl;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+
 
 import org.springframework.stereotype.Service;
 
 import com.tika.barcode.constants.QueryConstant;
 import com.tika.barcode.dto.response.NotificationConfEmailResponse;
 import com.tika.barcode.service.NotificationConfigService;
+
+import jakarta.persistence.*;
 
 @Service
 public class NotificationConfigServiceImpl implements NotificationConfigService{

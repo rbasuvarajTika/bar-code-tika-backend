@@ -3,13 +3,11 @@ package com.tika.barcode.service.impl;
 import java.util.Date;
 
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +23,9 @@ import com.tika.barcode.enums.ErrorCodes;
 import com.tika.barcode.exceptions.NSException;
 import com.tika.barcode.repo.UserRepository;
 import com.tika.barcode.service.UserService;
+
+import jakarta.persistence.*;
+
 import com.tika.barcode.constants.ParameterConstant;
 import com.tika.barcode.constants.ProcedureConstant;
 

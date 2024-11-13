@@ -1,12 +1,14 @@
 package com.tika.barcode.utility;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
+
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+
+import jakarta.mail.*;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.ByteArrayDataSource;
 
 @Component
 public class EmailService {

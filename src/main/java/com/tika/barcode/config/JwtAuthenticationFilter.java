@@ -2,10 +2,7 @@ package com.tika.barcode.config;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.tika.barcode.service.JwtService;
 import com.tika.barcode.service.UserService;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Processes an {@link JwtAuthenticationFilter} request.

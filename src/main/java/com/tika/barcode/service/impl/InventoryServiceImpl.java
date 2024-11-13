@@ -1,6 +1,7 @@
 package com.tika.barcode.service.impl;
 
 import java.io.ByteArrayOutputStream;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -11,11 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ParseException;
@@ -42,6 +39,8 @@ import com.tika.barcode.service.NotificationConfigService;
 import com.tika.barcode.service.NotificationTranService;
 import com.tika.barcode.utility.EmailService;
 import com.tika.barcode.utility.PdfGenerator;
+
+import jakarta.persistence.*;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
