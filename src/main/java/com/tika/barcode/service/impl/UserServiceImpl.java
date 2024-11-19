@@ -5,6 +5,7 @@ import java.util.Date;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -173,6 +174,74 @@ public class UserServiceImpl implements UserService {
 			throw new NSException(ErrorCodes.OK, "User Id Not Found");
 		}
 		return userDetailsList;
+	}
+		
+		@Override
+		public List<UserDetailsResponse> getAllUserDetails() {
+			List<User> allUsers = userRepository.findAll();  // Fetch all users from the repository
+		    List<UserDetailsResponse> userDetailsList = allUsers.stream().map(user -> {
+		        UserDetailsResponse userResponse = new UserDetailsResponse();
+		        userResponse.setUserId(user.getUserId());
+		        userResponse.setUserName(user.getUsername());
+		        userResponse.setFirstName(user.getFirstName());
+		        userResponse.setMiddleName(user.getMiddleName());
+		        userResponse.setLastName(user.getLastName());
+		        userResponse.setUserStatusFlag(user.getUserStatusFlag());
+		        userResponse.setTitle(user.getTitle());
+		        userResponse.setRole(user.getRole());
+		        userResponse.setUserMail(user.getUserMail());
+		        userResponse.setPhone(user.getPhone());
+		        userResponse.setUserMobile(user.getUserMobile());
+		        userResponse.setAddress1(user.getAddress1());
+		        userResponse.setAddress2(user.getAddress2());
+		        userResponse.setCity(user.getCity());
+		        userResponse.setState(user.getState());
+		        userResponse.setZip(user.getZip());
+		        userResponse.setPreferredName(user.getPreferredName());
+		        userResponse.setActiveInd(user.getActiveInd());
+		        userResponse.setUserTerr(user.getUserTerr());
+		        userResponse.setHireDate(user.getHireDate());
+		        userResponse.setEndDate(user.getEndDate());
+		        userResponse.setStartDate(user.getStartDate());
+		        userResponse.setAdmToolsFlag(user.getAdmToolsFlag());
+		        userResponse.setAttendeeFlag(user.getAttendeeFlag());
+		        userResponse.setBookingUrl(user.getBookingUrl());
+		        userResponse.setManagerEmail(user.getManagerEmail());
+		        userResponse.setUserTimeZone(user.getUserTimeZone());
+		        userResponse.setOutlookClientId(user.getOutlookClientId());
+		        userResponse.setOutlookSecretCode(user.getOutlookSecretCode());
+		        userResponse.setOutlookEmailId(user.getOutlookEmailId());
+		        userResponse.setSalesForce(user.getSalesForce());
+		        userResponse.setUpdatedDate(user.getPasswordUpdatedDate());
+		        userResponse.setUserType(user.getUserType());
+		        userResponse.setUserImageUrl(user.getUserImageUrl());
+		        userResponse.setCreatedUser(user.getCreatedUser());
+		        userResponse.setCreatedDate(user.getCreatedDate());
+		        userResponse.setUpdatedUser(user.getUpdatedUser());
+		        userResponse.setUpdatedDate(user.getUpdatedDate());
+		        return userResponse;
+		    }).collect(Collectors.toList());
+
+		    return userDetailsList;
+		}
+
+		@Override
+		public String updateUser(Integer userId, UserDetailsResponse userDetails) {
+		    Optional<User> existingUser = userRepository.findById(userId);
+		    if (existingUser.isPresent()) {
+		        User user = existingUser.get();
+		        
+		        // Map fields from `userDetails` to `user` for update
+		        user.setUserName(userDetails.getUserName());
+		        user.setUserMail(userDetails.getUserMail());
+		        user.setUserMobile(userDetails.getUserMobile());
+		        // Continue with other fields...
+		        
+		        userRepository.save(user); // Save updated user to the database
+		        return "User updated successfully";
+		    } else {
+		        throw new NSException(ErrorCodes.NOT_FOUND, "User with ID " + userId + " not found");
+		    }		
 	}
 
 

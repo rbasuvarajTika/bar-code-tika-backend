@@ -16,4 +16,6 @@ public interface ScanSupportService {
 	public String emailNotification(ScanSupportRequest request);
 	
 	public String updateScanSupport(ScanSupportUpdateRequest updateScanSupportRequest);
+	
+	public List<ScanSupportResponse> getAllScanSupports();
 }
