@@ -42,7 +42,8 @@ public class SecurityConfiguration {
 								new AntPathRequestMatcher("/api/v1/users/getUsersList"), new AntPathRequestMatcher("/getFaxPdf/**"), new AntPathRequestMatcher("/h2-console/**"),
 								new AntPathRequestMatcher("api/v1/users/update/user/password/**"), new AntPathRequestMatcher("/api/v1/auth/signup"), new AntPathRequestMatcher("/api/v1/users/create/user"),
 								new AntPathRequestMatcher("/api/v1/notification/emails/forgotpassword"), new AntPathRequestMatcher("/api/v1/auth/signin"),
-								new AntPathRequestMatcher("v3/api-docs"), new AntPathRequestMatcher("/swagger-ui.html"),new AntPathRequestMatcher("/api-docs/**"), new AntPathRequestMatcher("/swagger-ui/**")).permitAll().anyRequest().authenticated())
+								new AntPathRequestMatcher("v3/api-docs"), new AntPathRequestMatcher("/swagger-ui.html"),new AntPathRequestMatcher("/api-docs/**"), new AntPathRequestMatcher("/swagger-ui/**") , 
+								new AntPathRequestMatcher("/api/v1/users/updateUser/**") , new AntPathRequestMatcher("/api/v1/scanSupport/**")).permitAll().anyRequest().authenticated())
 				.sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

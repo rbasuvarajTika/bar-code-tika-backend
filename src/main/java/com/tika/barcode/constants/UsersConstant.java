@@ -20,7 +20,8 @@ public class UsersConstant {
 	public static final String USERSDETAILSBYUSERID = "/usersDetails/userId/{userId}";
 	public static final String USERSDETAILSBYUSERNAME = "/usersDetails/userName/{userName}";
 	public static final String USERSSTATUSFLAG = "/usersStatusFlag";
-	
+	public static final String USERSDETAILS = "/getAllUsers";
+	public static final String UPDATEUSER = "/updateUser/{id}";
 
 	
 

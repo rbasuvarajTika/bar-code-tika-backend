@@ -141,6 +141,15 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 
 		return response;
 	}
+	
+	@Override
+	public List<ScanSupportResponse> getAllScanSupports() {
+	    Query nativeQuery = entityManager.createNativeQuery(QueryConstant.GET_ALL_SCANSUPPORT);
+	    List<Object[]> queryResult = nativeQuery.getResultList();
+	    List<ScanSupportResponse> scanSupportResponse = queryResult.stream()
+	            .map(this::mapToObjectArrayScanSupportResponse).collect(Collectors.toList());
+	    return scanSupportResponse;
+	}
 
 	@Override
 	public String updateScanSupport(ScanSupportUpdateRequest updateScanSupport) {

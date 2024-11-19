@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,24 @@ public class UserController {
 		List<UserDetailsResponse> usersList = userService.getUserByUserId(userId);
 		return ResponseHelper.createResponse(new NSServiceResponse<UserDetailsResponse>(), usersList, CommonConstants.SUCCESSFULLY,
 				CommonConstants.ERRROR);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping(UsersConstant.USERSDETAILS)
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	public NSServiceResponse<List<UserDetailsResponse>> getAllUsers() {
+	    List<UserDetailsResponse> usersList = userService.getAllUserDetails();
+	    return ResponseHelper.createResponse(new NSServiceResponse<UserDetailsResponse>(), usersList, CommonConstants.SUCCESSFULLY,
+				CommonConstants.ERRROR);
+	}
+
+	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*")
+	@PutMapping(UsersConstant.UPDATEUSER)
+	public NSServiceResponse<String> updateUser(@PathVariable("id") Integer userId, @RequestBody UserDetailsResponse userDetails) {
+	    String responseMessage = userService.updateUser(userId, userDetails);
+	    return ResponseHelper.createResponse(new NSServiceResponse<String>(), responseMessage, CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
+
 	}
 
 }

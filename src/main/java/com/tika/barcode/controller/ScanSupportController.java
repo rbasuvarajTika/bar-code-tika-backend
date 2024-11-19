@@ -59,5 +59,13 @@ public class ScanSupportController {
 				scanSupportService.updateScanSupport(request),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 		
 	}
+	@SuppressWarnings("unchecked")
+	@GetMapping(ScanSupportConstant.SCAN_SUPPORT_GETALL)
+	@CrossOrigin(origins = "*")
+	public NSServiceResponse<List<ScanSupportResponse>> getAllScanSupports() {
+		 System.out.println("Processing getAllScanSupport endpoint...");
+	    return ResponseHelper.createResponse(new NSServiceResponse<List<ScanSupportResponse>>(),
+	            scanSupportService.getAllScanSupports(), CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
+	}
 
 }
