@@ -22,7 +22,9 @@ public class PdfGenerator {
     }
 
     public void generatePdf(String templateName, Map<String, Object> data, OutputStream os) throws Exception {
-        Context context = new Context();
+        try{
+        	Context context = new Context();
+       
         context.setVariables(data);
 
         String htmlContent = templateEngine.process(templateName, context);
@@ -31,5 +33,8 @@ public class PdfGenerator {
         renderer.setDocumentFromString(htmlContent);
         renderer.layout();
         renderer.createPDF(os);
+        }catch(Exception e) {
+        	System.out.print(e);
+        }
     }
 }

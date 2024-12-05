@@ -2,6 +2,7 @@ package com.tika.barcode.service.impl;
 
 import java.math.BigDecimal;
 
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.tika.barcode.constants.QueryConstant;
 import com.tika.barcode.dto.response.ConsignInventoryResponse;
+
 import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.ConsignInventoryService;
 
@@ -137,22 +139,46 @@ public class ConsignInventoryServiceImpl implements ConsignInventoryService {
 	
 	private ConsignInventoryResponse mapToObjectArrayConsInvtResponse(Object[] record) {
 		ConsignInventoryResponse response = new ConsignInventoryResponse();
-		response.setAccountId((Integer) record[0]);
-		response.setTerritoryId((Integer) record[1]);
-		response.setItemId((Integer) record[2]);
-		response.setBatchNo((String) record[3]);
-		Date expirydate = (Date) record[4];
+		response.setMonthId((Integer) record[0]);
+		response.setAccountId((Integer) record[1]);
+		response.setTerritoryId((Integer) record[2]);
+		response.setItemId((Integer) record[3]);
+		response.setBatch((String) record[4]);
+		Date expirydate = (Date) record[5];
 		if(expirydate!=null)
 		  response.setExpiryDate(expirydate.toLocalDate());
-		response.setTotalStock((BigDecimal) record[5]);
-		response.setMaterialKey((String) record[6]);
-		response.setCustomerId((String) record[7]);
-		response.setCustomerName((String) record[8]);
-		Timestamp rfrshDate = (Timestamp) record[9];
+		response.setTotalStock((BigDecimal) record[6]);
+		response.setMaterialKey((String) record[7]);
+		response.setCustomer((String) record[8]);
+		response.setCustomerName((String) record[9]);
+		response.setLotNo((String) record[10]);
+		Timestamp rfrshDate = (Timestamp) record[11];
 		if(rfrshDate!=null)
 		  response.setRfrshDate(rfrshDate.toLocalDateTime());
+		response.setTrnInvRecId((Integer) record[12]);
+		response.setCreatedUser((String) record[13]);
+		Timestamp createdDate = (Timestamp) record[14];
+		if(createdDate!=null)
+		  response.setCreatedDate(createdDate.toLocalDateTime());
+		
 		return response;
 	}
+	
+	@Override
+	public List<ConsignInventoryResponse> getAllConsignmentList() {
+		
+		    Query nativeQuery = entityManager.createNativeQuery(QueryConstant.GET_ALL_FCT_CONSIGNMENT_INVENTORY);
+		    List<Object[]> queryResult = nativeQuery.getResultList();
+		    List<ConsignInventoryResponse> consignInventoryResponse = queryResult.stream()
+		            .map(this::mapToObjectArrayConsInvtResponse).collect(Collectors.toList());
+		    return consignInventoryResponse;
+		}
 
+	@Override
+	public Long getTotalConsignInventoryCount() {
+		  Query query = entityManager.createNativeQuery(QueryConstant.TOTAL_ACC_ID_COUNT_FCT_CONSIGNMENT_INVENTORY);
+		  return ((Number) query.getSingleResult()).longValue(); 
+	}
 
+	
 }

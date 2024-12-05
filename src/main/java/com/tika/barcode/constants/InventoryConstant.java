@@ -14,6 +14,7 @@ public class InventoryConstant {
 	public static final String INV_CLOSE ="/close";
 	public static final String INV_CLOSE_DET_PDF ="/generate-pdf";
 	public static final String SEND_PDF_EMAIL ="/send-pdf-email";
-
+	public static final String INV_REC_COLLECTIVE_LIST ="/get/reconcile/collective/list";
+	public static final String INV_UPDATE = "/update/inventory/details/{trnInvRecId}";
 
 }

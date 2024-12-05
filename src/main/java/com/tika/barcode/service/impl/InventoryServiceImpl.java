@@ -2,8 +2,13 @@ package com.tika.barcode.service.impl;
 
 import java.io.ByteArrayOutputStream;
 
+
+
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -15,9 +20,13 @@ import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Optional;
 import com.tika.barcode.constants.ParameterConstant;
 import com.tika.barcode.constants.ProcedureConstant;
 import com.tika.barcode.constants.QueryConstant;
@@ -32,8 +41,13 @@ import com.tika.barcode.dto.response.AcoountDetailsResponse;
 import com.tika.barcode.dto.response.InventoryRecCloseDetailResponse;
 import com.tika.barcode.dto.response.InventoryRecClosePdfResponse;
 import com.tika.barcode.dto.response.InventoryRecDetailResponse;
-import com.tika.barcode.dto.response.InventoryReconResonse;
+import com.tika.barcode.dto.response.InventoryReconResponse;
+import com.tika.barcode.dto.response.InventoryReconcileCollectiveResponse;
+
 import com.tika.barcode.dto.response.NotificationConfEmailResponse;
+import com.tika.barcode.dto.response.PageResponseDTO;
+import com.tika.barcode.dto.response.TerrAlignmentResponse;
+import com.tika.barcode.dto.response.TerritoryResponse;
 import com.tika.barcode.service.InventoryService;
 import com.tika.barcode.service.NotificationConfigService;
 import com.tika.barcode.service.NotificationTranService;
@@ -41,6 +55,7 @@ import com.tika.barcode.utility.EmailService;
 import com.tika.barcode.utility.PdfGenerator;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
@@ -260,7 +275,7 @@ public class InventoryServiceImpl implements InventoryService {
 	}
 
 	@Override
-	public List<InventoryReconResonse> getInvRecByAccIdAndUser(String user) {
+	public List<InventoryReconResponse> getInvRecByAccIdAndUser(String user) {
 		//GET_INVREC_BY_ACCID_AND_USER
 //		String sql = "select a.TRN_INV_REC_ID,a.ACCOUNT_ID,a.RECON_STATUS,a.RECON_NOTES,a.CREATED_USER,"
 //				+ " a.CREATED_DATE,a.UPDATED_USER,a.UPDATED_DATE from TRN_INVENTORY_RECONCILE a "
@@ -268,13 +283,13 @@ public class InventoryServiceImpl implements InventoryService {
 		Query nativeQuery = entityManager.createNativeQuery(QueryConstant.GET_INVREC_BY_ACCID_AND_USER);
 		nativeQuery.setParameter(1, user);
 		List<Object[]> queryResult = nativeQuery.getResultList();
-		List<InventoryReconResonse> inventoryReconResonses = queryResult.stream()
+		List<InventoryReconResponse> inventoryReconResponse = queryResult.stream()
 				.map(this::mapToObjectArrayInvRecResponse).collect(Collectors.toList());
-		return inventoryReconResonses;
+		return inventoryReconResponse;
 	}
 
-	private InventoryReconResonse mapToObjectArrayInvRecResponse(Object[] record) {
-		InventoryReconResonse response = new InventoryReconResonse();
+	private InventoryReconResponse mapToObjectArrayInvRecResponse(Object[] record) {
+		InventoryReconResponse response = new InventoryReconResponse();
 		response.setTrnInvRecId((Integer) record[0]);
 		response.setAccountId((Integer) record[1]);
 		response.setReconStatus((String) record[2]);
@@ -521,8 +536,7 @@ public class InventoryServiceImpl implements InventoryService {
 			notificationTranService.addNotifficationTran(addNotificationTranRequest);
 			
 		}
-		
-		
+			
 	}
 
 	private String getAccountNameByInvRecId(Integer trnInvRecId) {
@@ -530,5 +544,98 @@ public class InventoryServiceImpl implements InventoryService {
 	String accountName = (String) queryResult.get(0).toString();
 	return accountName;
 	}
+	
+	
+	@Override
+	public List<InventoryReconcileCollectiveResponse> getAllCollectiveInventoryReconcile() {
+	   Query nativeQuery = entityManager.createNativeQuery(QueryConstant.GEL_ALL_COLLECTIVE_TRN_RECONCILE_LIST);
+	    List<Object[]> queryResult = nativeQuery.getResultList();
+	    List<InventoryReconcileCollectiveResponse> inventoryReconcileCollectiveResponse = queryResult.stream()
+	            .map(this::mapToObjectArrayInventoryReconcileCollectiveResponse).collect(Collectors.toList());
+	    return inventoryReconcileCollectiveResponse;
+	}
+	
+	
+	private InventoryReconcileCollectiveResponse mapToObjectArrayInventoryReconcileCollectiveResponse(Object[] record) {
+		InventoryReconcileCollectiveResponse response = new InventoryReconcileCollectiveResponse();
+			response.setTrnInvRecId((Integer) record[0]);
+			response.setTrnInvRecDetailId((Integer) record[1]);
+			response.setAccountId((Integer) record[2]);
+			response.setItemId((Integer) record[3]);
+			response.setItemCode((String) record[4]);
+			response.setBatchNo((String) record[5]);
+			response.setLotNo((String) record[6]);
+			Date expiryDate = (Date) record[7];
+			if(expiryDate!=null)
+			  response.setExpiryDate(expiryDate.toLocalDate());
+			response.setQtyInHand((BigDecimal) record[8]);
+			response.setMonthId((Integer) record[9]);
+			response.setReconStatus((String) record[10]);
+			response.setReconNotes((String) record[11]);
+			response.setRecCycleId((Integer) record[12]);
+			Date reconClosedDate = (Date) record[13];
+			if(reconClosedDate!=null)
+			  response.setReconClosedDate(reconClosedDate.toLocalDate());
+			response.setCreatedUser((String) record[14]);
+			Timestamp createdDate = (Timestamp) record[15];
+			if(createdDate!=null)
+			  response.setCreatedDate(createdDate.toLocalDateTime());
+			response.setUpdatedUser((String) record[16]);
+			Timestamp updatedDate = (Timestamp) record[17];
+			if(updatedDate!=null)
+			  response.setUpdatedDate(updatedDate.toLocalDateTime());
 
+			return response;
+		}
+
+	
+	@Override
+    @Transactional
+	public String updateInventoryDetails(Integer trnInvRecId, InventoryReconcileCollectiveResponse updateRequest) {
+	    // Update TRN_INVENTORY_RECONCILE query
+	    String updateReconcileQuery = "UPDATE TRN_INVENTORY_RECONCILE "
+	            + "SET ACCOUNT_ID = :accountId, RECON_STATUS = :reconStatus, RECON_NOTES = :reconNotes, "
+	            + "REC_CYCLE_ID = :recCycleId, RECON_CLOSED_DATE = :reconClosedDate, "
+	            + "UPDATED_USER = :updatedUser, UPDATED_DATE = :updatedDate "
+	            + "WHERE TRN_INV_REC_ID = :trnInvRecId";
+
+	    // Update TRN_INVENTORY_RECONCILE_DETAIL query
+	    String updateReconcileDetailQuery = "UPDATE TRN_INVENTORY_RECONCILE_DETAIL "
+	            + "SET ITEM_ID = :itemId, ITEM_CODE = :itemCode, BATCH_NO = :batchNo, LOT_NO = :lotNo, "
+	            + "EXPIRY_DATE = :expiryDate, QTY_IN_HAND = :qtyInHand, MONTH_ID = :monthId, "
+	            + "UPDATED_USER = :updatedUser, UPDATED_DATE = :updatedDate "
+	            + "WHERE TRN_INV_REC_ID = :trnInvRecId AND TRN_INV_REC_DETAIL_ID = :trnInvRecDetailId";
+
+	    // Execute updates
+	    int rowsUpdatedReconcile = entityManager.createNativeQuery(updateReconcileQuery)
+	            .setParameter("accountId", updateRequest.getAccountId())
+	            .setParameter("reconStatus", updateRequest.getReconStatus())
+	            .setParameter("reconNotes", updateRequest.getReconNotes())
+	            .setParameter("recCycleId", updateRequest.getRecCycleId())
+	            .setParameter("reconClosedDate", updateRequest.getReconClosedDate())
+	            .setParameter("updatedUser", updateRequest.getUpdatedUser())
+	            .setParameter("updatedDate", updateRequest.getUpdatedDate())
+	            .setParameter("trnInvRecId", trnInvRecId)
+	            .executeUpdate();
+
+	    int rowsUpdatedReconcileDetail = entityManager.createNativeQuery(updateReconcileDetailQuery)
+	            .setParameter("itemId", updateRequest.getItemId())
+	            .setParameter("itemCode", updateRequest.getItemCode())
+	            .setParameter("batchNo", updateRequest.getBatchNo())
+	            .setParameter("lotNo", updateRequest.getLotNo())
+	            .setParameter("expiryDate", updateRequest.getExpiryDate())
+	            .setParameter("qtyInHand", updateRequest.getQtyInHand())
+	            .setParameter("monthId", updateRequest.getMonthId())
+	            .setParameter("updatedUser", updateRequest.getUpdatedUser())
+	            .setParameter("updatedDate", updateRequest.getUpdatedDate())
+	            .setParameter("trnInvRecId", trnInvRecId)
+	            .setParameter("trnInvRecDetailId", updateRequest.getTrnInvRecDetailId())
+	            .executeUpdate();
+
+	    return (rowsUpdatedReconcile > 0 || rowsUpdatedReconcileDetail > 0) 
+	            ? "Inventory details updated successfully." 
+	            : "No records updated.";
+	}
+	
+	
 }

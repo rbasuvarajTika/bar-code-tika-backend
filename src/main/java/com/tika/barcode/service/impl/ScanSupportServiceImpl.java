@@ -153,22 +153,28 @@ public class ScanSupportServiceImpl implements ScanSupportService{
 
 	@Override
 	public String updateScanSupport(ScanSupportUpdateRequest updateScanSupport) {
-		try {
-			StoredProcedureQuery query = entityManager.createStoredProcedureQuery(ProcedureConstant.USP_SCAN_SUPPORT_EDIT);
-			query.registerStoredProcedureParameter(ParameterConstant.USER, String.class, ParameterMode.IN);
-			query.registerStoredProcedureParameter(ParameterConstant.SUPPORT_ID, Integer.class, ParameterMode.IN);
-			query.registerStoredProcedureParameter(ParameterConstant.ISSUE_STATUS, String.class, ParameterMode.IN);
+	try {
+		StoredProcedureQuery query = entityManager.createStoredProcedureQuery(ProcedureConstant.USP_SCAN_SUPPORT_EDIT);
+		query.registerStoredProcedureParameter(ParameterConstant.USER, String.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.SUPPORT_ID, Integer.class, ParameterMode.IN);
+		query.registerStoredProcedureParameter(ParameterConstant.ISSUE_STATUS, String.class, ParameterMode.IN);
 
-			query.setParameter(ParameterConstant.USER, updateScanSupport.getUser());
-			query.setParameter(ParameterConstant.SUPPORT_ID, updateScanSupport.getSupportId());
-			query.setParameter(ParameterConstant.ISSUE_STATUS, updateScanSupport.getIssueStatus());
+		query.setParameter(ParameterConstant.USER, updateScanSupport.getUser());
+		query.setParameter(ParameterConstant.SUPPORT_ID, updateScanSupport.getSupportId());
+		query.setParameter(ParameterConstant.ISSUE_STATUS, updateScanSupport.getIssueStatus());
 
-			query.execute();
-			return "Scan Support updated successfully";
-		}catch(Exception e) {
-			throw new RuntimeException(" scan suppport update failed",e);
-		}
+		query.execute();
+		return "Scan Support updated successfully";
+	}catch(Exception e) {
+		throw new RuntimeException(" scan suppport update failed",e);
+	}
 		
+	}
+
+	@Override
+	public Long getAllSupportIdCount() {
+		Query query = entityManager.createNativeQuery(QueryConstant.TOTAL_SUPPORT_ID_COUNT_DIM_SCAN_SUPPORT);
+		return ((Number) query.getSingleResult()).longValue() ;
 	}
 
 }

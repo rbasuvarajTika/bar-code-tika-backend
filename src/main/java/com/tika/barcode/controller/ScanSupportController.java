@@ -18,6 +18,7 @@ import com.tika.barcode.constants.ScanSupportConstant;
 import com.tika.barcode.dto.request.ScanSupportRequest;
 import com.tika.barcode.dto.request.ScanSupportUpdateRequest;
 import com.tika.barcode.dto.response.NSServiceResponse;
+import com.tika.barcode.dto.response.ScanSupportCountResponse;
 import com.tika.barcode.dto.response.ScanSupportResponse;
 import com.tika.barcode.service.ScanSupportService;
 import com.tika.barcode.utility.ResponseHelper;
@@ -66,6 +67,14 @@ public class ScanSupportController {
 		 System.out.println("Processing getAllScanSupport endpoint...");
 	    return ResponseHelper.createResponse(new NSServiceResponse<List<ScanSupportResponse>>(),
 	            scanSupportService.getAllScanSupports(), CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping(ScanSupportConstant.SCAN_SUPPORT_TOTAL_COUNT)
+	@CrossOrigin(origins = "*")
+	public ScanSupportCountResponse getAllSupportIdCount () {
+		Long count = scanSupportService.getAllSupportIdCount() ;
+		return new ScanSupportCountResponse (count);
 	}
 
 }

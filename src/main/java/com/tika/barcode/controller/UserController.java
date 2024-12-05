@@ -18,6 +18,7 @@ import com.tika.barcode.constants.UsersConstant;
 import com.tika.barcode.dto.request.SignUpRequest;
 import com.tika.barcode.dto.response.NSServiceResponse;
 import com.tika.barcode.dto.response.UserDetailsResponse;
+import com.tika.barcode.dto.response.UserIdCountResponse;
 import com.tika.barcode.service.UserService;
 import com.tika.barcode.utility.ResponseHelper;
 
@@ -76,5 +77,13 @@ public class UserController {
 	    return ResponseHelper.createResponse(new NSServiceResponse<String>(), responseMessage, CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 
 	}
+	
+		@SuppressWarnings("unchecked")
+		@CrossOrigin(origins = "*")
+		@GetMapping(UsersConstant.USERIDCOUNT)
+	    public UserIdCountResponse getUserIdCount() {
+	        Long count = userService.getUserIdCount();  
+	        return new UserIdCountResponse(count);  
+	    }
 
 }

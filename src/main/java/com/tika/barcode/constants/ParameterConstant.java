@@ -10,7 +10,6 @@ public class ParameterConstant {
 	public static final String USER_TYPE ="USER_TYPE";
 	public static final String ACCOUNT_ID ="ACCOUNT_ID";
 	public static final String TRN_INV_REC_ID ="TRN_INV_REC_ID";
-	public static final String ITEM_NUMBER ="ITEM_NUMBER";
 	public static final String BATCH_NO ="BATCH_NO";
 	public static final String LOT_NO ="LOT_NO";
 	public static final String QTY_IN_HAND ="QTY_IN_HAND";
@@ -40,6 +39,43 @@ public class ParameterConstant {
 	public static final String DELIVERY_STATUS ="DELIVERY_STATUS";
 	public static final String IN_PROGRESS ="INPROGRESS";
 	public static final String SUPPORT_ID ="SUPPORT_ID";
+	public static final String TERRITORY_NAME ="TERRITORY_NAME";
+	public static final String ITEM_ID ="ITEM_ID";
+	public static final String ITEM_NUMBER ="ITEM_NUMBER";
+	public static final String ITEM_CODE ="ITEM_CODE";
+	public static final String ITEM_DESC1 ="ITEM_DESC1";
+	public static final String ITEM_DESC2 ="ITEM_DESC2";
+	public static final String ITEM_TYPE ="ITEM_TYPE";
+	public static final String PROD_LINE ="PROD_LINE";
+	public static final String ITEM_GROUP_ID ="ITEM_GROUP_ID";
+	public static final String ITEM_GROUP_NAME ="ITEM_GROUP_NAME";
+	public static final String PRODUCT_GROUP_ID ="PRODUCT_GROUP_ID";
+	public static final String PRODUCT_GROUP_NAME ="PRODUCT_GROUP_NAME";
+	public static final String IMPLANT_TYPE ="IMPLANT_TYPE";
+	public static final String RFRSH_DATE ="RFRSH_DATE";
+	public static final String TERRITORY_ID ="TERRITORY_ID";
+	public static final String TERRITORY_CD ="TERRITORY_CD";
+	
+	public static final String REGION_ID ="REGION_ID";
+	public static final String REGION_CD ="REGION_CD";
+	public static final String REGION_NAME ="REGION_NAME";
+	public static final String AREA_ID ="AREA_ID";
+	public static final String AREA_CD ="AREA_CD";
+	public static final String AREA_NAME ="AREA_NAME";
+	public static final String COMPANY_ID ="COMPANY_ID";
+	public static final String COMPANY_CD ="COMPANY_CD";
+	public static final String COMPANY_NAME ="COMPANY_NAME";
+	public static final String ACTIVE_IND ="ACTIVE_IND";
+	public static final String USER_ID ="USER_ID";
+	public static final String CREATE_USER ="CREATE_USER";
+	public static final String CREATE_DT ="CREATE_DT";
+	public static final String UPDATE_USER ="UPDATE_USER";
+	public static final String UPDATE_DT ="UPDATE_DT";
+	public static final String UPDATE_DATE ="UPDATE_DATE";
+	public static final String OLD_TERR_ID ="OLD_TERR_ID";
+	
+	public static final String COUNTRY ="COUNTRY";
+	//public static final String TERRITORY_NAME ="TERRITORY_NAME";
 	
 	
 	

@@ -29,6 +29,7 @@ import jakarta.persistence.*;
 
 import com.tika.barcode.constants.ParameterConstant;
 import com.tika.barcode.constants.ProcedureConstant;
+import com.tika.barcode.constants.QueryConstant;
 
 
 
@@ -244,6 +245,10 @@ public class UserServiceImpl implements UserService {
 		    }		
 	}
 
-
+		@Override
+		public Long getUserIdCount() {
+			  Query query = entityManager.createNativeQuery(QueryConstant.SELECT_TOTAL_USER_ID_COUNT_DIM_USER);
+			  return ((Number) query.getSingleResult()).longValue(); 
+		}
 
 }

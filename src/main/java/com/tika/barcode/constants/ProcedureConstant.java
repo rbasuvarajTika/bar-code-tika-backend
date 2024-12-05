@@ -17,4 +17,12 @@ public class ProcedureConstant {
 	
 	public static final String USP_SCAN_SUPPORT_EDIT ="usp_scan_support_edit";
 	
+	public static final String USP_TERRITORY_EDIT ="usp_scan_support_edit";
+	
+	public static final String USP_ITEM_DETAILS_UPDATE ="usp_item_details_update";
+	
+	public static final String USP_TERRITORY_DETAILS_UPDATE ="usp_territory_details_update";
+	
+	public static final String USP_TERR_ALIGNMENT_DETAILS_UPDATE ="usp_terr_alignment_details_update";
+	
 }

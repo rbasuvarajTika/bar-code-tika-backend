@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InventoryReconResonse {
+public class InventoryReconResponse {
 	
 	private Integer trnInvRecId;
 	private Integer accountId;

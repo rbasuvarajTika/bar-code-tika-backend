@@ -14,16 +14,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConsignInventoryResponse {
+	private Integer monthId;
 	private Integer accountId;
 	private Integer territoryId;
 	private Integer itemId;
-	private String batchNo;
+	private String batch;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate expiryDate;
 	private BigDecimal totalStock;
 	private String materialKey;
-	private String customerId;
+	private String customer;
 	private String customerName;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDateTime rfrshDate;
+	private String lotNo;
+	private Integer trnInvRecId;
+	private String createdUser;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime createdDate;
+	
 
 }
+
+

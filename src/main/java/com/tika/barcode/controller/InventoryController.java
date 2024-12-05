@@ -5,12 +5,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,12 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tika.barcode.constants.CommonConstants;
 import com.tika.barcode.constants.InventoryConstant;
+import com.tika.barcode.constants.TerritoryConstant;
 import com.tika.barcode.dto.request.CloseInventoryRequest;
 import com.tika.barcode.dto.request.InventoryReconRequest;
 import com.tika.barcode.dto.response.InventoryRecCloseDetailResponse;
 import com.tika.barcode.dto.response.InventoryRecDetailResponse;
-import com.tika.barcode.dto.response.InventoryReconResonse;
+import com.tika.barcode.dto.response.InventoryReconResponse;
+import com.tika.barcode.dto.response.InventoryReconcileCollectiveResponse;
+import com.tika.barcode.dto.response.ItemListResponse;
 import com.tika.barcode.dto.response.NSServiceResponse;
+import com.tika.barcode.dto.response.PageResponseDTO;
 import com.tika.barcode.service.InventoryService;
 import com.tika.barcode.utility.EmailService;
 import com.tika.barcode.utility.ResponseHelper;
@@ -38,6 +45,8 @@ public class InventoryController {
 	@Autowired
 	private EmailService emailService;
 	
+	
+	
 	@SuppressWarnings("unchecked")
 	@PostMapping(InventoryConstant.INV_INSERT)
 	@CrossOrigin(origins = "*")
@@ -51,9 +60,9 @@ public class InventoryController {
 	@SuppressWarnings("unchecked")
 	@GetMapping(InventoryConstant.INV_REC_BY_USER)
 	@CrossOrigin(origins = "*")
-	public NSServiceResponse<List<InventoryReconResonse>> getInvRecByAccIdAndUser(
+	public NSServiceResponse<List<InventoryReconResponse>> getInvRecByAccIdAndUser(
 			@RequestParam String user){
-		return ResponseHelper.createResponse(new NSServiceResponse<List<InventoryReconResonse>>(),
+		return ResponseHelper.createResponse(new NSServiceResponse<List<InventoryReconResponse>>(),
 				inventoryService.getInvRecByAccIdAndUser(user),CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
 		
 	}
@@ -129,6 +138,23 @@ public class InventoryController {
 	        } catch (Exception e) {
 	           throw new RuntimeException("Email sent failed",e);	        }
 	    }
+	    
+	    @SuppressWarnings("unchecked")
+	    @GetMapping(InventoryConstant.INV_REC_COLLECTIVE_LIST)
+	    @CrossOrigin(origins = "*")
+	    public NSServiceResponse<List<InventoryReconcileCollectiveResponse>> getAllCollectiveInventoryReconcile() {
+		return ResponseHelper.createResponse(new NSServiceResponse<List<InventoryReconcileCollectiveResponse>>(),
+				inventoryService.getAllCollectiveInventoryReconcile(), CommonConstants.SUCCESSFULLY, CommonConstants.ERRROR);
+		}
+	    
+	    @PutMapping(InventoryConstant.INV_UPDATE)
+	    public ResponseEntity<String> updateInventoryDetails(
+	            @PathVariable Integer trnInvRecId,
+	            @RequestBody InventoryReconcileCollectiveResponse updateRequest) {
+	        String result = inventoryService.updateInventoryDetails(trnInvRecId, updateRequest);
+	        return ResponseEntity.ok(result);
+	    }
+
 
 
 }

@@ -18,4 +18,7 @@ public interface ScanSupportService {
 	public String updateScanSupport(ScanSupportUpdateRequest updateScanSupportRequest);
 	
 	public List<ScanSupportResponse> getAllScanSupports();
+	
+	public Long getAllSupportIdCount();
+	
 }

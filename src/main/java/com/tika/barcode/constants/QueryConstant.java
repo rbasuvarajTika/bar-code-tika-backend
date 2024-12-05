@@ -117,12 +117,38 @@ public class QueryConstant {
 			+ "  FROM FCT_CONSIGNMENT_INVENTORY fci";
 	public static final String PAG_WHERE_FCT_CONS_INV ="  WHERE fci.ACCOUNT_ID=?1";
 	
+	public static final String GET_ALL_FCT_CONSIGNMENT_INVENTORY ="SELECT fci.MONTH_ID\r\n"
+			+ "      ,fci.ACCOUNT_ID\r\n"
+			+ "      ,fci.TERRITORY_ID\r\n"
+			+ "      ,fci.ITEM_ID\r\n"
+			+ "      ,fci.Batch\r\n"
+			+ "      ,fci.Expiry_Date\r\n"
+			+ "      ,fci.Total_Stock\r\n"
+			+ "      ,fci.MATERIAL_KEY\r\n"
+			+ "      ,fci.CUSTOMER\r\n"
+			+ "      ,fci.CUSTOMER_NAME\r\n"
+			+ "      ,fci.LOT_NO\r\n"
+			+ "      ,fci.RFRSH_DATE\r\n"
+			+ "      ,fci.TRN_INV_REC_ID\r\n"
+			+ "      ,fci.CREATED_USER\r\n"
+			+ "      ,fci.CREATED_DATE\r\n"
+			+ "  FROM FCT_CONSIGNMENT_INVENTORY fci";
+	public static final String PAG_SELECT_COUNT_FCT_CONSIGNMENT_INVENTORY ="SELECT COUNT(*) "
+			+ "  FROM FCT_CONSIGNMENT_INVENTORY fci";
+	public static final String PAG_WHERE_FCT_CONSIGNMENT_INVENTORY ="  WHERE fci.MONTH_ID=?1";
+	
 	/*END- QUERY - CONSIGNMENT SERVICE */
 	
 	/*START- QUERY - ITEMDETAILS SERVICE */
 	
 	public static final String SELECT_ITEM_DETAILS_DIM_ITEM ="select ITEM_ID,ITEM_NUMBER, "
 			+ "ITEM_DESC1  ITEM_NAME \r\n" + "from DIM_ITEM where ITEM_GROUP_NAME='Bio-Excel'";
+	
+	public static final String GET_ALL_ITEM_DETAILS_DIM_ITEM ="select a.ITEM_ID, \r\n"
+			+ "      a.ITEM_CODE, a.ITEM_NUMBER, a.ITEM_DESC1, a.ITEM_DESC2, a.ITEM_TYPE,  \r\n "
+			+ "		 a.PROD_LINE, a.ITEM_GROUP_ID, a.ITEM_GROUP_NAME, \r\n"
+			+ "		 a. PRODUCT_GROUP_ID, a.PRODUCT_GROUP_NAME, a.IMPLANT_TYPE, a.RFRSH_DATE \r\n"
+			+ " 	from DIM_ITEM a ORDER BY a.ITEM_ID ASC";
 	
 	/*END- QUERY - ITEMDETAILS SERVICE */
 	
@@ -134,7 +160,7 @@ public class QueryConstant {
 	
 	public static final String GET_ALL_SCANSUPPORT ="select a.SUPPORT_ID,a.USER_EMAIL,"
 			+ "a.ISSUE_DETAILS,a.ISSUE_STATUS,a.CREATE_USER,a.CREATE_DATE,a.UPDATE_USER,a.UPDATE_DATE"
-			+ " from DIM_SCAN_SUPPORT a";
+			+ " from DIM_SCAN_SUPPORT a ORDER BY a.SUPPORT_ID ASC";
 	
 	public static final String RETRIVE_SCAN_SUPPORT_PK ="select TOP 1 a.SUPPORT_ID from DIM_SCAN_SUPPORT a "
 			+ "	where a.CREATE_USER=?1 AND a.USER_EMAIL=?2 ORDER BY a.CREATED_DATE DESC ";
@@ -146,5 +172,51 @@ public class QueryConstant {
 	public static final String SELECT_NOTICATION_CONF_BY_NAME ="select n.NOTIFICATION_ID,n.NOTIFICATION_NAME,n.NOTIFICATION_SUBJECT,"
 			+ "n.NOTIFICATION_BODY,n.NOTIFICATION_STATUS from DIM_NOTIFICATION_CONFIG n "
 			+ "	where n.NOTIFICATION_NAME=?1 ";
+	
+	/*END- QUERY - DIM NOTIFICATION SERVICE */
+	
+
+	
+	/*START- QUERY - */
+		
+	public static final String GET_ALL_XREF_TERR_ALIGNMNT ="SELECT xta.TERRITORY_ID\r\n"
+			+ "      ,xta.ACCOUNT_ID\r\n"
+			+ "      ,xta.RFRSH_DATE\r\n"
+			+ "      ,xta.CREATE_USER\r\n"
+			+ "      ,xta.OLD_TERR_ID\r\n"
+			+ "      ,xta.UPDATE_DATE\r\n"
+			+ "      ,xta.UPDATE_USER\r\n"
+			+ "  FROM XREF_TERR_ALIGNMNT xta";
+	
+
+	public static final String GEL_ALL_COLLECTIVE_TRN_RECONCILE_LIST = 
+		    "SELECT b.TRN_INV_REC_ID, c.TRN_INV_REC_DETAIL_ID, b.ACCOUNT_ID, c.ITEM_ID, c.ITEM_CODE, "
+		    + "c.BATCH_NO, c.LOT_NO, c.EXPIRY_DATE, c.QTY_IN_HAND, c.MONTH_ID, b.RECON_STATUS, "
+		    + "b.RECON_NOTES, b.REC_CYCLE_ID, b.RECON_CLOSED_DATE, b.CREATED_USER, b.CREATED_DATE, "
+		    + "COALESCE(c.UPDATED_USER, b.UPDATED_USER) AS UPDATED_USER, "
+		    + "COALESCE(c.UPDATED_DATE, b.UPDATED_DATE) AS UPDATED_DATE "
+		    + "FROM TRN_INVENTORY_RECONCILE b "
+		    + "LEFT JOIN TRN_INVENTORY_RECONCILE_DETAIL c ON b.TRN_INV_REC_ID = c.TRN_INV_REC_ID \r\n";
+		
+	public static final String GET_ALL_TERRITORY ="SELECT t.TERRITORY_ID \r\n"
+			+ " 	,t.TERRITORY_CD, t.TERRITORY_NAME, t.REGION_ID, t.REGION_CD, t.REGION_NAME \r\n"
+			+ "  ,t.AREA_ID, t.AREA_CD, t.AREA_NAME, t.COMPANY_ID, t.COMPANY_CD, t.COMPANY_NAME \r\n"
+			+ "  ,t.ACTIVE_IND, t.USER_ID, t.CREATE_USER, t.CREATE_DT, t.UPDATE_USER, t.UPDATE_DT"
+			+ "	,t.COUNTRY \r\n"
+			+ "  FROM DIM_TERRITORY t ";
+	
+	public static final String SELECT_TOTAL_USER_ID_COUNT_DIM_USER = "SELECT COUNT(USER_ID) FROM DIM_USER";
+	
+	public static final String SELECT_TOTAL_ITEM_ID_COUNT_DIM_ITEM = "SELECT COUNT(ITEM_ID) FROM DIM_ITEM";
+	
+	public static final String TOTAL_ACC_ID_COUNT_FCT_CONSIGNMENT_INVENTORY = 
+			"SELECT COUNT(ACCOUNT_ID) FROM FCT_CONSIGNMENT_INVENTORY";
+	
+	public static final String TOTAL_SUPPORT_ID_COUNT_DIM_SCAN_SUPPORT = 
+			"SELECT COUNT(SUPPORT_ID) FROM DIM_SCAN_SUPPORT";
+			
+	
+
+	/*END- QUERY -  */
 
 }

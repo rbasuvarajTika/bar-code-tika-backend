@@ -22,6 +22,7 @@ public class UsersConstant {
 	public static final String USERSSTATUSFLAG = "/usersStatusFlag";
 	public static final String USERSDETAILS = "/getAllUsers";
 	public static final String UPDATEUSER = "/updateUser/{id}";
+	public static final String USERIDCOUNT= "/userIdcount";
 
 	
 

@@ -21,7 +21,11 @@ public interface UserService {
 	UserDetailsService userDetailsService();
 	
 	public List<UserDetailsResponse> getUserByUserId(Integer userId);
+	
 	List<UserDetailsResponse> getAllUserDetails();
+	
 	String updateUser(Integer userId, UserDetailsResponse userDetails);
+	
+	public Long getUserIdCount();
 
 }
