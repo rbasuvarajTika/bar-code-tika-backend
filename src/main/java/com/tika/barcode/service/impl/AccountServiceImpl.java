@@ -255,6 +255,7 @@ public class AccountServiceImpl implements AccountService {
 		response.setTerritoryName((String) record[9]);
 		response.setRepName((String) record[10]);
 		response.setUserName((String) record[11]);
+		response.setAccountType((String) record[12]);
 		return response;
 	}
 

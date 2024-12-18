@@ -29,6 +29,7 @@ public class AccountResponse {
     private String territoryName;
     private String repName;
     private String userName;
+    private String accountType;
     
     //private String userLogin;
 

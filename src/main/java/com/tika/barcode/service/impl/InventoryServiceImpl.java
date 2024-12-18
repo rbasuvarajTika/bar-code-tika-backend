@@ -40,6 +40,7 @@ import com.tika.barcode.dto.request.SubmitInventoryRequest;
 import com.tika.barcode.dto.response.AcoountDetailsResponse;
 import com.tika.barcode.dto.response.InventoryRecCloseDetailResponse;
 import com.tika.barcode.dto.response.InventoryRecClosePdfResponse;
+import com.tika.barcode.dto.response.InventoryFctPdfResponse;
 import com.tika.barcode.dto.response.InventoryRecDetailResponse;
 import com.tika.barcode.dto.response.InventoryReconResponse;
 import com.tika.barcode.dto.response.InventoryReconcileCollectiveResponse;
@@ -447,6 +448,14 @@ public class InventoryServiceImpl implements InventoryService {
 				.map(this::mapToObjectArrayInvRecDetClosePdfResponse).collect(Collectors.toList());
 		return inventoryRecClosePdfResponse;
 	}
+	
+	private List<InventoryFctPdfResponse> getFctInventoryMissedDetails(Integer accountId) {
+		Query nativeQuery = entityManager.createNativeQuery(QueryConstant.PDF_INVREC_MISSED_DETAILS_FCT).setParameter(1, accountId);
+		List<Object[]> queryResult = nativeQuery.getResultList();
+		List<InventoryFctPdfResponse> inventoryRecClosePdfResponse = queryResult.stream()
+				.map(this::mapToObjectArrayInvFctClosePdfResponse).collect(Collectors.toList());
+		return inventoryRecClosePdfResponse;
+	}
 
 	private InventoryRecClosePdfResponse mapToObjectArrayInvRecDetClosePdfResponse(Object[] record) {
 		InventoryRecClosePdfResponse response = new InventoryRecClosePdfResponse();
@@ -468,12 +477,29 @@ public class InventoryServiceImpl implements InventoryService {
 		response.setQtyInHand((BigDecimal) record[8]);
 		return response;
 	}
+	
+	private InventoryFctPdfResponse mapToObjectArrayInvFctClosePdfResponse(Object[] record) {
+		InventoryFctPdfResponse response = new InventoryFctPdfResponse();
+		response.setAccountId((Integer) record[0]);
+		response.setAccountName((String) record[1]);
+		response.setItemNumber((String) record[2]);
+		response.setItemName((String) record[3]);
+		response.setLotNo((String) record[4]);
+		response.setTotalStock((BigDecimal) record[5]);
+		return response;
+	}
 
 	public byte[] createInventoryPdf(Integer trnInvRecId) throws Exception {
 		List<InventoryRecClosePdfResponse> details = getInvRecCloseDetById(trnInvRecId);
 		HashMap<String, Object> data = new HashMap<>();
 		data.put("details", details);
-
+		if(details.size() > 0) {
+			Integer accountId=details.get(0).getAccountId();
+			List<InventoryFctPdfResponse> missedDetails = getFctInventoryMissedDetails(accountId);
+			data.put("missedDetails", missedDetails);
+		}
+		
+		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		pdfGenerator.generatePdf("inventory-report", data, os);
 		return os.toByteArray();
@@ -510,7 +536,7 @@ public class InventoryServiceImpl implements InventoryService {
 	    	}else {
 	    		recipientEmail=getEmail(username);
 	    	}
-	    	
+	    	recipientEmail = "rbasuvaraj@tikamobile.com";
 	        byte[] pdfContent = createInventoryPdf(trnInvRecId);
 	        confEmailResponse = notificationConfigService.getNotiConfByName(ParameterConstant.CLOSE_DETAILS_PDF);
 	       // if(confEmailResponse!=null) {

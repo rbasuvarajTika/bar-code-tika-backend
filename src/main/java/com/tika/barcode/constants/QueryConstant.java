@@ -34,6 +34,14 @@ public class QueryConstant {
 			+ "	join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
 			+ "	left join DIM_ITEM d on (a.ITEM_ID = d.ITEM_ID)\r\n"
 			+ "	where b.RECON_STATUS IN ('Closed') AND a.TRN_INV_REC_ID =?1";
+	
+	public static final String PDF_INVREC_MISSED_DETAILS_FCT =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,b.MATERIAL_KEY ITEM_NUMBER,d.ITEM_DESC1 ITEM_NAME,\r\n"
+			+ "	b.LOT_NO,b.Total_Stock from \r\n"
+			+ "	FCT_CONSIGNMENT_INVENTORY b\r\n"
+			+ "	join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID) \r\n"
+			+ "	left join DIM_ITEM d on (b.ITEM_ID = d.ITEM_ID)\r\n"
+			+ " where MONTH_ID IS NULL and b.ACCOUNT_ID=?1";
+
 	public static final String SELECT_MAIL_DIM_USER_BY_NAME ="select USER_EMAIL \r\n"
 			+ "from DIM_USER \r\n"
 			+ "where USER_NAME=?1";
@@ -47,7 +55,7 @@ public class QueryConstant {
 	public static final String SELECT_ACC_LIST_BY_USERNAME ="select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
 			+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
 			+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME,\r\n"
-			+ "concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN \r\n"
+			+ "concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN,b.type\r\n"
 			+ "from DIM_ACCOUNT b \r\n"
 			+ "join XREF_TERR_ALIGNMNT x on (b.ACCOUNT_ID=x.ACCOUNT_ID)\r\n"
 			+ "join DIM_TERRITORY c on (x.TERRITORY_ID=c.TERRITORY_ID)\r\n"
@@ -62,7 +70,18 @@ public class QueryConstant {
 			+ "join DIM_TERRITORY c on (a.TERRITORY_ID=c.TERRITORY_ID)\r\n"
 			+ "join DIM_ITEM d on (a.ITEM_ID=d.ITEM_ID)\r\n"
 			+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
-			+ "where u.USER_NAME=?1";
+			+ "where u.USER_NAME=?1 and a.LOT_NO is not null";
+	
+	public static final String SELECT_ACC_LIST_NBEW_IOS ="select distinct b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,"
+			+ "b.ADDRESS2,b.CITY,b.[STATE],b.ZIP,\r\n"
+			+ "c.TERRITORY_ID,c.TERRITORY_CD,c.TERRITORY_NAME,\r\n"
+			+ "concat(FIRST_NAME,' ',LAST_NAME) REP_NAME,u.USER_NAME USER_LOGIN \r\n"
+			+ "from DIM_ACCOUNT b \r\n"
+			+ "join FCT_CONSIGNMENT_INVENTORY FCT on b.ACCOUNT_ID = FCT.ACCOUNT_ID \r\n"
+			+ "join DIM_TERRITORY c on (FCT.TERRITORY_ID=c.TERRITORY_ID)\r\n"
+			+ "left join DIM_USER u on (c.USER_ID=u.USER_ID)\r\n"
+			+" where u.USER_NAME is not null AND c.TERRITORY_NAME not like '% RO %'";
+	
 	public static final String SELECT_ACC_DET_BY_ACCID ="select b.ACCOUNT_ID,b.ACCOUNT_NAME,b.ADDRESS1,b.ADDRESS2,"
 			+ "b.CITY,b.STATE,b.ZIP,\r\n"
 			+ "d.ITEM_ID,d.ITEM_NUMBER MATERIAL_KEY,d.ITEM_DESC1,a.Batch,'AB1235' LOT_NO,a.Expiry_Date,"
@@ -142,7 +161,8 @@ public class QueryConstant {
 	/*START- QUERY - ITEMDETAILS SERVICE */
 	
 	public static final String SELECT_ITEM_DETAILS_DIM_ITEM ="select ITEM_ID,ITEM_NUMBER, "
-			+ "ITEM_DESC1  ITEM_NAME \r\n" + "from DIM_ITEM where ITEM_GROUP_NAME='Bio-Excel'";
+			+ "ITEM_DESC1  ITEM_NAME \r\n" + "from DIM_ITEM where ITEM_GROUP_NAME = 'Minerva' or \r\n"
+					+ " PRODUCT_GROUP_NAME = 'Minerva'";
 	
 	public static final String GET_ALL_ITEM_DETAILS_DIM_ITEM ="select a.ITEM_ID, \r\n"
 			+ "      a.ITEM_CODE, a.ITEM_NUMBER, a.ITEM_DESC1, a.ITEM_DESC2, a.ITEM_TYPE,  \r\n "

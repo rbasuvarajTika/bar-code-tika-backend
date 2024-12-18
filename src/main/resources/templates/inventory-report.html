@@ -58,5 +58,28 @@
             </tr>
         </tbody>
     </table>
+     <h1 th:text="'Items were not scanned/missing'"></h1>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Account ID</th>
+                <th>Account Name</th>
+                <th>Item Number</th>
+                <th>Item Name</th>
+                <th>Lot No</th>
+                <th>Total Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="missedDetail : ${missedDetails}">
+                <td th:text="${missedDetail.accountId}"></td>
+                <td th:text="${missedDetail.accountName}"></td>
+                <td th:text="${missedDetail.itemNumber}"></td>
+                <td th:text="${missedDetail.itemName}"></td>
+                <td th:text="${missedDetail.lotNo}"></td>
+                <td th:text="${missedDetail.totalStock}"></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
