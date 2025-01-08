@@ -21,15 +21,25 @@ public class QueryConstant {
 			+ "left join TRN_INVENTORY_RECONCILE_DETAIL a on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
 			+ "join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
 			+ "where b.RECON_STATUS IN ('Submit','Closed') and b.CREATED_USER=?1";
-	public static final String SELECT_INREC_DET =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,a.TRN_INV_REC_ID,a.TRN_INV_REC_DETAIL_ID,a.BATCH_NO,"
-			+ "a.ITEM_ID,a.ITEM_CODE,a.LOT_NO,b.REC_CYCLE_ID,b.CREATED_DATE,A.QTY_IN_HAND,B.RECON_CLOSED_DATE,b.RECON_STATUS\r\n"
-			+ "from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"
+	public static final String SELECT_INREC_DET =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,"
+			+ "a.TRN_INV_REC_ID,12345 TRN_INV_REC_DETAIL_ID,a.BATCH BATCH_NO,"
+			+ "a.ITEM_ID,a.MATERIAL_KEY ITEM_CODE,a.LOT_NO,b.REC_CYCLE_ID,b.CREATED_DATE,a.Total_Stock QTY_IN_HAND,B.RECON_CLOSED_DATE,b.RECON_STATUS\r\n"
+			+ "from FCT_CONSIGNMENT_INVENTORY a \r\n"
 			+ "join TRN_INVENTORY_RECONCILE b on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
 			+ "join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n";
 	public static final String PDF_INVREC_DET_BY_STATUS_CLOSED_AND_TRN_INVREC_ID =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,\r\n"
-			+ "	a.ITEM_CODE,d.ITEM_DESC1, a.LOT_NO,b.CREATED_DATE,b.RECON_CLOSED_DATE,\r\n"
-			+ "	a.EXPIRY_DATE ,a.QTY_IN_HAND\r\n"
-			+ "	from TRN_INVENTORY_RECONCILE_DETAIL a \r\n"
+			+ "	a.MATERIAL_KEY ITEM_CODE,d.ITEM_DESC1, a.LOT_NO,b.CREATED_DATE,b.RECON_CLOSED_DATE,\r\n"
+			+ "	a.EXPIRY_DATE ,a.Total_Stock QTY_IN_HAND\r\n"
+			+ "	from FCT_CONSIGNMENT_INVENTORY a \r\n"
+			+ "	join TRN_INVENTORY_RECONCILE b on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
+			+ "	join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
+			+ "	left join DIM_ITEM d on (a.ITEM_ID = d.ITEM_ID)\r\n"
+			+ "	where b.RECON_STATUS IN ('Closed') AND a.TRN_INV_REC_ID =?1";
+	
+	public static final String INVREC_DET_BY_STATUS_CLOSED_AND_TRN_INVREC_ID =" select  b.ACCOUNT_ID,c.ACCOUNT_NAME,a.TRN_INV_REC_ID,'',a.BATCH_NO,\r\n"
+			+ "	a.MATERIAL_KEY ITEM_CODE,d.ITEM_DESC1, a.LOT_NO,b.CREATED_DATE,b.RECON_CLOSED_DATE,\r\n"
+			+ "	a.EXPIRY_DATE ,a.Total_Stock QTY_IN_HAND\r\n"
+			+ "	from FCT_CONSIGNMENT_INVENTORY a \r\n"
 			+ "	join TRN_INVENTORY_RECONCILE b on (a.TRN_INV_REC_ID=b.TRN_INV_REC_ID)\r\n"
 			+ "	join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
 			+ "	left join DIM_ITEM d on (a.ITEM_ID = d.ITEM_ID)\r\n"
@@ -40,7 +50,7 @@ public class QueryConstant {
 			+ "	FCT_CONSIGNMENT_INVENTORY b\r\n"
 			+ "	join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID) \r\n"
 			+ "	left join DIM_ITEM d on (b.ITEM_ID = d.ITEM_ID)\r\n"
-			+ " where MONTH_ID IS NULL and b.ACCOUNT_ID=?1";
+			+ " where TRN_INV_REC_ID IS NULL and b.ACCOUNT_ID=?1";
 
 	public static final String SELECT_MAIL_DIM_USER_BY_NAME ="select USER_EMAIL \r\n"
 			+ "from DIM_USER \r\n"

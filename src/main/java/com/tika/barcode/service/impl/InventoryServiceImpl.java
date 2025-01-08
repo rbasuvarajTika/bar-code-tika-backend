@@ -334,9 +334,8 @@ public class InventoryServiceImpl implements InventoryService {
 //				+ "join DIM_ACCOUNT c on (b.ACCOUNT_ID=c.ACCOUNT_ID)\r\n"
 //				+ "where b.RECON_STATUS IN ('Closed') and a.CREATED_USER=?1 and a.TRN_INV_REC_ID=?2";
 		Query nativeQuery = entityManager.createNativeQuery(QueryConstant.SELECT_INREC_DET
-				+ " where b.RECON_STATUS IN ('Closed') and a.CREATED_USER=?1 and a.TRN_INV_REC_ID=?2" );
-		nativeQuery.setParameter(1, username);
-		nativeQuery.setParameter(2, trnInvRecId);
+				+ " where b.RECON_STATUS IN ('Closed') and a.TRN_INV_REC_ID=?1" );
+		nativeQuery.setParameter(1, trnInvRecId);
 		List<Object[]> queryResult = nativeQuery.getResultList();
 
 		List<InventoryRecCloseDetailResponse> inventoryReconDetailResonses = queryResult.stream()
@@ -536,7 +535,7 @@ public class InventoryServiceImpl implements InventoryService {
 	    	}else {
 	    		recipientEmail=getEmail(username);
 	    	}
-	    	recipientEmail = "rbasuvaraj@tikamobile.com";
+	    	//recipientEmail = "rbasuvaraj@tikamobile.com";
 	        byte[] pdfContent = createInventoryPdf(trnInvRecId);
 	        confEmailResponse = notificationConfigService.getNotiConfByName(ParameterConstant.CLOSE_DETAILS_PDF);
 	       // if(confEmailResponse!=null) {
